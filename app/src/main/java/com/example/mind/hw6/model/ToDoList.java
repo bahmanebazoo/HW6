@@ -46,10 +46,10 @@ public class ToDoList {
         mDone = done;
     }
 
-    public ToDoList(String title, String description, UUID UUID, Date date) {
+    public ToDoList(String title, String description,boolean done) {
+        mDone=done;
         mTitle = title;
         mDescription = description;
-        mUUID = UUID;
-        mDate = date;
+       // mDate = date;
     }
 }

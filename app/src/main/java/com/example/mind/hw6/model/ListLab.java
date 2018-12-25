@@ -9,6 +9,13 @@ public class ListLab {
     private static ListLab instance;
     private LinkedHashMap<UUID, ToDoList> mToDoListLinkedHashMap;
 
+
+    public void addToDo(ToDoList mtoDoList){
+        mToDoListLinkedHashMap =new LinkedHashMap<>();
+        ToDoList toDoList = mtoDoList;
+        mToDoListLinkedHashMap.put(toDoList.getUUID(),mtoDoList);
+    }
+
     public static ListLab getInstance() {
         if (instance == null) {
             instance = new ListLab();
@@ -16,9 +23,11 @@ public class ListLab {
         return instance;
     }
 
+
     public List<ToDoList> getList(){
         return new ArrayList<>(mToDoListLinkedHashMap.values());
     }
+
     public ToDoList getToDo(UUID id){
 
         return mToDoListLinkedHashMap.get(id);

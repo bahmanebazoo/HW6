@@ -29,9 +29,10 @@
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
-            app:tabTextColor="@color/tablayouttextcolor"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:tabBackground="@color/colorBackground"
+            app:tabTextColor="@color/tablayouttextcolor">
 
             <android.support.design.widget.TabItem
                 android:id="@+id/tabI_all"
@@ -66,6 +67,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        app:srcCompat="@drawable/ic_action_name" />
 
 </android.support.design.widget.CoordinatorLayout>
