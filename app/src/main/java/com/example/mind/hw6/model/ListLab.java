@@ -1,5 +1,7 @@
 package com.example.mind.hw6.model;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -8,13 +10,17 @@ import java.util.UUID;
 public class ListLab {
     private static ListLab instance;
     private LinkedHashMap<UUID, ToDoList> mToDoListLinkedHashMap;
+//    private LinkedHashMap<UUID, ToDoList> mTempToDoListLinkedHashMap;
 
 
-    public void addToDo(ToDoList mtoDoList){
-        mToDoListLinkedHashMap =new LinkedHashMap<>();
-        ToDoList toDoList = mtoDoList;
-        mToDoListLinkedHashMap.put(toDoList.getUUID(),mtoDoList);
+    private ListLab() {
+        mToDoListLinkedHashMap = new LinkedHashMap<>();
     }
+
+    public void addToDo(ToDoList mtoDoList) {
+        mToDoListLinkedHashMap.put(mtoDoList.getUUID(), mtoDoList);
+    }
+
 
     public static ListLab getInstance() {
         if (instance == null) {
@@ -24,21 +30,52 @@ public class ListLab {
     }
 
 
-    public List<ToDoList> getList(){
+    public List<ToDoList> getList() {
+
         return new ArrayList<>(mToDoListLinkedHashMap.values());
     }
 
-    public ToDoList getToDo(UUID id){
+    public ToDoList getToDo(UUID id) {
 
         return mToDoListLinkedHashMap.get(id);
     }
-    public int getIndexOfToDo(UUID id){
+
+    public int getIndexOfToDo(UUID id) {
         List<ToDoList> list = getList();
-        for(int i = 0 ; i<mToDoListLinkedHashMap.size() ; i++){
-            if(list.get(i).getUUID().equals(id)){
+        for (int i = 0; i < mToDoListLinkedHashMap.size(); i++) {
+            if (list.get(i).getUUID().equals(id)) {
                 return i;
             }
         }
         return -1;
     }
-}
+
+    public LinkedHashMap<UUID, ToDoList> getToDoListLinkedHashMap() {
+        return mToDoListLinkedHashMap;
+    }
+
+    public List<ToDoList> getListForShow(int tab) {
+        List<ToDoList> akbar = getList();
+
+
+        if (tab == 2) {
+            for (int i = akbar.size() - 1; i >= 0; i--) {
+                if (!akbar.get(i).isDone()) {
+                    akbar.remove(i);
+                }
+            }
+        } else if (tab == 3) {
+            for (int i = akbar.size() - 1; i >= 0; i--) {
+                if (akbar.get(i).isDone()) {
+                    akbar.remove(i);
+                }
+            }
+        }
+        Log.d("bahman", "" + akbar.size());
+
+        return akbar;
+
+    }
+
+    }
+
