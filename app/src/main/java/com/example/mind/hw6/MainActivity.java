@@ -1,10 +1,13 @@
 package com.example.mind.hw6;
 
-import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
@@ -12,43 +15,31 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.mind.hw6.model.ListLab;
+import com.example.mind.hw6.model.ToDoList;
 
 public class MainActivity extends AppCompatActivity {
-
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
+    private PlaceholderFragment.RToDoAdapter mRToDoAdapter;
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
     private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        // Set up the ViewPager with the sections adapter.
         mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
@@ -57,18 +48,18 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
-        FloatingActionButton fab =  findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               startActivity(AddToDoActivity.newIntent(MainActivity.this));
+                startActivity(AddToDoActivity.newIntent(MainActivity.this, 1));
             }
         });
 
     }
 
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -88,17 +79,31 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     /**
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends Fragment {
+
+        private EditText mTitleid;
+        private EditText micon_text;
+        private RecyclerView mRecyclerView;
+        private RToDoAdapter mRToDoAdapter;
+        private String mtitle;
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            updateUI();
+        }
+
         /**
          * The fragment argument representing the section number for this
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+
 
         public PlaceholderFragment() {
         }
@@ -119,9 +124,74 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+           /* TextView textView = rootView.findViewById(R.id.section_label);
+            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));*/
+            mRecyclerView = rootView.findViewById(R.id.recyclerView);
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            updateUI();
+            //Intent intent=getActivity().getIntent();
+
             return rootView;
+        }
+
+        private  void updateUI() {
+            if (mRToDoAdapter == null) {
+                mRToDoAdapter = new RToDoAdapter();
+                mRecyclerView.setAdapter(mRToDoAdapter);
+            } else {
+                mRToDoAdapter.notifyDataSetChanged();
+            }
+        }
+
+        class RToDoViewHolder extends RecyclerView.ViewHolder {
+            private TextView mTextViewTitle;
+            private TextView mTextViewicon;
+
+            public RToDoViewHolder(@NonNull View itemView) {
+                super(itemView);
+                mTextViewTitle = itemView.findViewById(R.id.titleid);
+                mTextViewicon = itemView.findViewById(R.id.icon_text);
+
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getActivity(), "ok made toast", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            private void bind(String title) {
+
+                mTextViewTitle.setText(title);
+                String firstChar = "" + title.charAt(0);
+                mTextViewicon.setText(firstChar.toUpperCase());
+            }
+        }
+
+        class RToDoAdapter extends RecyclerView.Adapter<RToDoViewHolder> {
+
+            @NonNull
+            @Override
+            public RToDoViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+                View view = LayoutInflater.from(getActivity()).inflate(R.layout.layout_view_holder, viewGroup, false);
+
+                return new RToDoViewHolder(view);
+            }
+
+            @Override
+            public void onBindViewHolder(@NonNull RToDoViewHolder viewHolder, int position) {
+
+                ToDoList toDoList = ListLab.getInstance().getListForShow(getArguments()
+                        .getInt(ARG_SECTION_NUMBER)).get(position);
+                viewHolder.bind(toDoList.getTitle());
+            }
+
+            @Override
+            public int getItemCount() {
+                Log.d("bahman", "hello");
+
+                return ListLab.getInstance().getListForShow(getArguments().getInt(ARG_SECTION_NUMBER)).size();
+            }
         }
     }
 
@@ -129,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -147,5 +217,11 @@ public class MainActivity extends AppCompatActivity {
             // Show 3 total pages.
             return 3;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
     }
 }
