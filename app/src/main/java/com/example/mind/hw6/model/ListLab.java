@@ -15,6 +15,7 @@ public class ListLab {
 
     private ListLab() {
         mToDoListLinkedHashMap = new LinkedHashMap<>();
+
     }
 
     public void addToDo(ToDoList mtoDoList) {
@@ -50,31 +51,54 @@ public class ListLab {
         return -1;
     }
 
+    public int getPosition(UUID uuid){
+        List<ToDoList> position = getList();
+        for(int i=0; i<position.size();i++){
+            if(position.get(i).getUUID()==uuid){
+                return i;
+            }
+        }
+
+       return -1;
+
+    }
+
     public LinkedHashMap<UUID, ToDoList> getToDoListLinkedHashMap() {
         return mToDoListLinkedHashMap;
     }
 
     public List<ToDoList> getListForShow(int tab) {
-        List<ToDoList> akbar = getList();
+        List<ToDoList> recyclerViewList = getList();
 
 
         if (tab == 2) {
-            for (int i = akbar.size() - 1; i >= 0; i--) {
-                if (!akbar.get(i).isDone()) {
-                    akbar.remove(i);
+            for (int i = recyclerViewList.size() - 1; i >= 0; i--) {
+                if (!recyclerViewList.get(i).isDone()) {
+                    recyclerViewList.remove(i);
                 }
             }
         } else if (tab == 3) {
-            for (int i = akbar.size() - 1; i >= 0; i--) {
-                if (akbar.get(i).isDone()) {
-                    akbar.remove(i);
+            for (int i = recyclerViewList.size() - 1; i >= 0; i--) {
+                if (recyclerViewList.get(i).isDone()) {
+                    recyclerViewList.remove(i);
                 }
             }
         }
-        Log.d("bahman", "" + akbar.size());
+        Log.d("bahman", "" + recyclerViewList.size());
 
-        return akbar;
+        return recyclerViewList;
 
+    }
+
+    public UUID mAddToDo(ToDoList mToDoList){
+        ListLab.getInstance().addToDo(mToDoList);
+        UUID uuid = mToDoList.getUUID();
+
+        return uuid;
+    }
+
+    public void removeTask(UUID uuid){
+        getToDoListLinkedHashMap().remove(uuid);
     }
 
     }

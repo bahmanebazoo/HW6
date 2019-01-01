@@ -1,5 +1,7 @@
 package com.example.mind.hw6.model;
 
+import android.widget.CheckBox;
+
 import java.util.Date;
 import java.util.UUID;
 
@@ -8,7 +10,7 @@ public class ToDoList {
     private String mDescription;
     private UUID mUUID;
     private Date mDate;
-    private boolean mDone=false;
+    private boolean mDone;
 
     public UUID getUUID() {
         return mUUID;
@@ -46,10 +48,16 @@ public class ToDoList {
         mDone = done;
     }
 
-    public ToDoList(String title, String description,boolean done) {
-        mDone=done;
+    public ToDoList() {
+        mUUID = UUID.randomUUID();
+        mDate = new Date();
+    }
+
+    public ToDoList(String title, String description, boolean done) {
+        mUUID = UUID.randomUUID();
+       mDone =done;
         mTitle = title;
         mDescription = description;
-       // mDate = date;
+        mDate = new Date();
     }
 }

@@ -31,8 +31,9 @@ public class AddToDoFragment extends Fragment {
 
     private static final String DIALOG_TAG = "DialogDate";
     private static final int REQ_DATE_PICKER = 0;
+    public static final int REQ_DELETE_PICKER = 1;
     public static final String DATE_TAG = "date";
-    public static final String DELETE_TAG= "delete";
+    public static final String DELETE_TAG = "delete";
 
 
     private EditText mTitle;
@@ -40,12 +41,13 @@ public class AddToDoFragment extends Fragment {
     private String mStringTitle;
     private String mStringDescription;
     private CheckBox mDo;
-   // private DatePicker mDatePicker;
+    // private DatePicker mDatePicker;
     private Button mDateButton;
     private Button mSave;
     private Button mDelete;
     ToDoList mToDoList;
     private UUID id;
+    private int position;
     private boolean state;
     private boolean mBooleancheck;
 
@@ -59,12 +61,11 @@ public class AddToDoFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        id = (UUID) getArguments().getSerializable(ARG_UUID_KEY);
-//        Toast.makeText(getActivity(),id.toString(),Toast.LENGTH_LONG).show();
+        setId();
         state = getArguments().getBoolean(ARG_BUTTON);
         mToDoList = ListLab.getInstance().getToDo(id);
         mStringTitle = ListLab.getInstance().getToDo(id).getTitle();
-mStringDescription=ListLab.getInstance().getToDo(id).getDescription();
+        mStringDescription = ListLab.getInstance().getToDo(id).getDescription();
     }
 
     public static AddToDoFragment newInstance(UUID uuid, boolean buttonAdd) {
@@ -85,8 +86,8 @@ mStringDescription=ListLab.getInstance().getToDo(id).getDescription();
         mTitle = view.findViewById(R.id.insert_title);
         mDescription = view.findViewById(R.id.insert_description);
         mDo = view.findViewById(R.id.done_condition);
-       // mDatePicker = view.findViewById(R.id.date_input);
-        mDateButton =view.findViewById(R.id.date_button);
+        // mDatePicker = view.findViewById(R.id.date_input);
+        mDateButton = view.findViewById(R.id.date_button);
         mSave = view.findViewById(R.id.save_to_list);
         mDelete = view.findViewById(R.id.new_to_do);
 
@@ -94,22 +95,23 @@ mStringDescription=ListLab.getInstance().getToDo(id).getDescription();
         if (!state) {
             mDelete.setVisibility(View.GONE);
         } else {
-            addToFragmentLayout(mToDoList);
+            addToFragmentLayout();
         }
 
 //setDateButton();
         mSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // Log.d("onclick", "clicked");
+                // Log.d("onclick", "clicked");
 
                 if (!mTitle.getText().toString().equals("")) {
                     //Toast.makeText(getActivity(),mTitle.getText().toString(),Toast.LENGTH_LONG).show();
                     mToDoList.setTitle(mTitle.getText().toString());
                     mToDoList.setDescription(mDescription.getText().toString());
                     mToDoList.setDone(mDo.isChecked());
-                    mToDoList=new ToDoList();
+                    mToDoList = new ToDoList();
                     ListLab.getInstance().mAddToDo(mToDoList);
+                    id=mToDoList.getUUID();
                     mTitle.setText(null);
                     mDescription.setText(null);
                     mTitle.setHint(R.string.title_hint);
@@ -117,9 +119,8 @@ mStringDescription=ListLab.getInstance().getToDo(id).getDescription();
                     mDo.setChecked(false);
                     mDelete.setVisibility(View.VISIBLE);
                     Toast.makeText(getActivity(), "saved", Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    Toast.makeText(getActivity(),"you cant left Title Empty!!",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(), "you cant left Title Empty!!", Toast.LENGTH_LONG).show();
                 }
 
                /* ListLab.getInstance().addToDo(mToDoList);
@@ -136,9 +137,9 @@ mStringDescription=ListLab.getInstance().getToDo(id).getDescription();
         mDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            DateFragment fragment = DateFragment.newInstance();
-                fragment.setTargetFragment(AddToDoFragment.this,0);
-                fragment.show(getFragmentManager(),DATE_TAG);
+                DateFragment fragment = DateFragment.newInstance();
+                fragment.setTargetFragment(AddToDoFragment.this, REQ_DELETE_PICKER);
+                fragment.show(getFragmentManager(), DATE_TAG);
             }
         });
 
@@ -146,10 +147,8 @@ mStringDescription=ListLab.getInstance().getToDo(id).getDescription();
             @Override
             public void onClick(View v) {
                 CheckFragment fragment = CheckFragment.newInstance(id);
-                fragment.setTargetFragment(AddToDoFragment.this,0);
-                fragment.show(getFragmentManager(),DELETE_TAG);
-                if(mToDoList==null)
-                    Toast.makeText(getActivity(),"no object",Toast.LENGTH_SHORT);
+                fragment.setTargetFragment(AddToDoFragment.this, REQ_DELETE_PICKER);
+                fragment.show(getFragmentManager(), DELETE_TAG);
 
                /* ListLab.getInstance().removeTask(id);
                 if(ListLab.getInstance().getList().size()!=0) {
@@ -164,22 +163,23 @@ mStringDescription=ListLab.getInstance().getToDo(id).getDescription();
             }
         });
 
-        if(true){
+
         mTitle.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-if(mStringTitle ==null|| mStringTitle .equals("")&&mToDoList.getTitle()!=null&&mToDoList.getTitle().equals("")){
-    mStringTitle =mToDoList.getTitle();
-}
+                if (mStringTitle == null || mStringTitle.equals("") && mToDoList.getTitle() != null && mToDoList.getTitle().equals("")) {
+                    mStringTitle = mToDoList.getTitle();
+                }
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mToDoList.setTitle(s.toString());
             }
+
             @Override
             public void afterTextChanged(Editable s) {
-                if(mToDoList.getTitle()==null||mToDoList.getTitle()==""){
+                if (mToDoList.getTitle() == null || mToDoList.getTitle() == "") {
                     mToDoList.setTitle(mStringTitle);
                 }
 
@@ -193,22 +193,24 @@ if(mStringTitle ==null|| mStringTitle .equals("")&&mToDoList.getTitle()!=null&&m
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-            mToDoList.setDescription(s.toString());
+                mToDoList.setDescription(s.toString());
             }
 
             @Override
             public void afterTextChanged(Editable s) {
 
             }
-        });}
+        });
+
 
         return view;
 
 
     }
-    private void setDateButton(){
+
+    private void setDateButton() {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
-        String ouput =format.format(mToDoList.getDate());
+        String ouput = format.format(mToDoList.getDate());
         mDateButton.setText(ouput);
 
     }
@@ -216,12 +218,15 @@ if(mStringTitle ==null|| mStringTitle .equals("")&&mToDoList.getTitle()!=null&&m
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode!=0)return;
-        if(resultCode==Activity.RESULT_OK){
+        if (requestCode != 0 | requestCode != 1) return;
+        if (resultCode == Activity.RESULT_OK) {
             Date date = (Date) data.getSerializableExtra(DateFragment.EXTRA_DATE);
             mToDoList.setDate(date);
             setDateButton();
-
+        }
+        if (resultCode == 4) {
+            Toast.makeText(getContext(),"hahahah",Toast.LENGTH_SHORT).show();
+            processOfDelete();
 
         }
 
@@ -233,16 +238,24 @@ if(mStringTitle ==null|| mStringTitle .equals("")&&mToDoList.getTitle()!=null&&m
         // getChildFragmentManager().getFragments().get(getArguments().getInt(ARG_SECTION_NUMBER_CHILD)).onActivityResult();
     }
 
-    public void addToFragmentLayout(ToDoList toDoList){
+    public void addToFragmentLayout() {
         mTitle.setText(mToDoList.getTitle());
         mDescription.setText(mToDoList.getDescription());
         mDo.setChecked(mToDoList.isDone());
     }
 
-    public void processOfDelete(){
+    public void processOfDelete() {
+
         ToDoList toDoList_this = ListLab.getInstance().getList().get(ListLab.getInstance().getList().size() - 1);
         id = toDoList_this.getUUID();
         mToDoList = ListLab.getInstance().getToDo(id);
-        addToFragmentLayout(mToDoList);
+        addToFragmentLayout();
+
     }
+
+    public void setId() {
+        id = (UUID) getArguments().getSerializable(ARG_UUID_KEY);
+        position = ListLab.getInstance().getPosition(id);
+    }
+
 }
