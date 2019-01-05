@@ -5,4 +5,10 @@
     <color name="colorAccent">#991bd8</color>
     <color name="colorBackground">#cec18adc</color>
     <color name="tablayouttextcolor">#b20b0b0b</color>
+    <color name="doneObjects">#bd4cd2fa</color>
+    <color name="linkcolor">#1250c2</color>
+    <color name="positivecolor">#0bdf0b</color>
+    <color name="backgroundLight">#f6ffff</color>
+    <color name="White">#ffffff</color>
+    <color name="Alarm">#ff8284</color>
 </resources>

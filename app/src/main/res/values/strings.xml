@@ -7,7 +7,20 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="description_hint">Description</string>
     <string name="title_hint">Title: shopping</string>
-    <string name="savetolist">save</string>
+    <string name="savetolist">new Task</string>
     <string name="donecheckbox">Done</string>
-    <string name="newtodo">New</string>
+    <string name="delete">Delete</string>
+    <string name="title_activity_date_time">DateTimeActivity</string>
+    <string name="savedialog">save and back to Tasks list?</string>
+    <string name="deletedialog">Are you sure to delete this Task?</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="Email">E_mail</string>
+    <string name="emailhint">something@example.com</string>
+    <string name="passwordtitle">password</string>
+    <string name="passwordhint">between 6 to 12 character</string>
+    <string name="forget_password">forget your password?</string>
+    <string name="sign_up">SIGN UP</string>
+    <string name="repeat_password">repeat password</string>
+    <string name="log_in">LOG IN</string>
 </resources>

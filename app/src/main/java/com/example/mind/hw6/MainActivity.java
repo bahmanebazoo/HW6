@@ -1,11 +1,13 @@
 package com.example.mind.hw6;
 
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -21,26 +23,46 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mind.hw6.model.ListLab;
 import com.example.mind.hw6.model.ToDoList;
 
+import java.util.UUID;
+
 public class MainActivity extends AppCompatActivity {
+    public static final String USER_ID  ="userid";
     private PlaceholderFragment.RToDoAdapter mRToDoAdapter;
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     private ViewPager mViewPager;
+    private ImageView mImageView;
+    private ToDoList mToDoList;
+    private  UUID mUUIDuser;
+    private static UUID UserUUID;
+
+    public static Intent newIntent(Context context,UUID userid){
+        Intent intent = new Intent(context,MainActivity.class);
+        intent.putExtra(USER_ID,userid);
+        return intent;
+
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mUUIDuser=(UUID) getIntent().getSerializableExtra(USER_ID);
+        UserUUID = mUUIDuser;
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager = findViewById(R.id.container);
+        mImageView = findViewById(R.id.imagempty);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = findViewById(R.id.tabs);
@@ -52,7 +74,11 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(AddToDoActivity.newIntent(MainActivity.this, 1));
+                mToDoList = new ToDoList(mUUIDuser);
+                UUID uuid = ListLab.getInstance().mAddToDo(mToDoList);
+                // Toast.makeText(getApplicationContext(),uuid.toString(),Toast.LENGTH_LONG).show();
+                Intent intent = AddToDoActivity.newIntent(MainActivity.this, uuid, false);
+                startActivity(intent);
             }
         });
 
@@ -88,9 +114,13 @@ public class MainActivity extends AppCompatActivity {
 
         private EditText mTitleid;
         private EditText micon_text;
+
         private RecyclerView mRecyclerView;
         private RToDoAdapter mRToDoAdapter;
         private String mtitle;
+        private int mposition;
+        private ImageView mImageView;
+
 
         @Override
         public void onResume() {
@@ -128,13 +158,18 @@ public class MainActivity extends AppCompatActivity {
             textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));*/
             mRecyclerView = rootView.findViewById(R.id.recyclerView);
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            mImageView = rootView.findViewById(R.id.imagempty);
             updateUI();
             //Intent intent=getActivity().getIntent();
 
             return rootView;
         }
 
-        private  void updateUI() {
+        private void updateUI() {
+
+        /*    if (mposition!=1){
+                mImageView.setVisibility(View.GONE);
+            }*/
             if (mRToDoAdapter == null) {
                 mRToDoAdapter = new RToDoAdapter();
                 mRecyclerView.setAdapter(mRToDoAdapter);
@@ -145,26 +180,39 @@ public class MainActivity extends AppCompatActivity {
 
         class RToDoViewHolder extends RecyclerView.ViewHolder {
             private TextView mTextViewTitle;
-            private TextView mTextViewicon;
+            private TextView mTextViewIcon;
+            private TextView mTextViewDate;
+            private RelativeLayout mRelativeLayout;
+            private ToDoList mToDoList;
 
             public RToDoViewHolder(@NonNull View itemView) {
                 super(itemView);
                 mTextViewTitle = itemView.findViewById(R.id.titleid);
-                mTextViewicon = itemView.findViewById(R.id.icon_text);
+                mTextViewIcon = itemView.findViewById(R.id.icon_text);
+                mTextViewDate = itemView.findViewById(R.id.date_view_holder);
+                mRelativeLayout = itemView.findViewById(R.id.viewholderid);
+
 
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(getActivity(), "ok made toast", Toast.LENGTH_SHORT).show();
+                        Intent intent = AddToDoActivity.newIntent(getActivity(), mToDoList.getUUID(), true);
+
+                        startActivity(intent);
+
                     }
                 });
             }
 
-            private void bind(String title) {
-
-                mTextViewTitle.setText(title);
-                String firstChar = "" + title.charAt(0);
-                mTextViewicon.setText(firstChar.toUpperCase());
+            private void bind(ToDoList toDoList) {
+                mToDoList = toDoList;
+                mTextViewTitle.setText(toDoList.getTitle());
+                String firstChar = "" + toDoList.getTitle().charAt(0);
+                mTextViewIcon.setText(firstChar.toUpperCase());
+                mTextViewDate.setText(toDoList.getDate().toString());
+                if (toDoList.isDone())
+                    mRelativeLayout.setBackgroundColor(getContext().getColor(R.color.doneObjects));
             }
         }
 
@@ -180,19 +228,23 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onBindViewHolder(@NonNull RToDoViewHolder viewHolder, int position) {
-
-                ToDoList toDoList = ListLab.getInstance().getListForShow(getArguments()
-                        .getInt(ARG_SECTION_NUMBER)).get(position);
-                viewHolder.bind(toDoList.getTitle());
+                if (getArguments() != null) {
+                    ToDoList toDoList = ListLab.getInstance().getListForShow(getArguments()
+                            .getInt(ARG_SECTION_NUMBER), UserUUID).get(position);
+                    viewHolder.bind(toDoList);
+                }
             }
 
             @Override
             public int getItemCount() {
                 Log.d("bahman", "hello");
-
-                return ListLab.getInstance().getListForShow(getArguments().getInt(ARG_SECTION_NUMBER)).size();
+                mposition = getArguments().getInt(ARG_SECTION_NUMBER);
+                if (ListLab.getInstance().getListForShow(mposition,UserUUID).size() > 0)
+                    mImageView.setVisibility(View.GONE);
+                return ListLab.getInstance().getListForShow(mposition,UserUUID).size();
             }
         }
+
     }
 
     /**
@@ -220,8 +272,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
+    protected void onDestroy() {
+        super.onDestroy();
+        //here must all of guest Tasks remove from Repository
     }
 }
