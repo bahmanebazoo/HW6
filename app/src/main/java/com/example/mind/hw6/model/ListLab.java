@@ -18,7 +18,7 @@ public class ListLab {
 
     }
 
-    public void addToDo(ToDoList mtoDoList) {
+    private void addToDo(ToDoList mtoDoList) {
         mToDoListLinkedHashMap.put(mtoDoList.getUUID(), mtoDoList);
     }
 
@@ -59,17 +59,21 @@ public class ListLab {
             }
         }
 
-       return -1;
+        return -1;
 
     }
 
-    public LinkedHashMap<UUID, ToDoList> getToDoListLinkedHashMap() {
+    private LinkedHashMap<UUID, ToDoList> getToDoListLinkedHashMap() {
         return mToDoListLinkedHashMap;
     }
 
-    public List<ToDoList> getListForShow(int tab) {
+    public List<ToDoList> getListForShow(int tab,UUID uuid) {
         List<ToDoList> recyclerViewList = getList();
-
+        for(int i = recyclerViewList.size() - 1; i >= 0; i--) {
+            if (!recyclerViewList.get(i).getUserUUID().equals(uuid)) {
+                recyclerViewList.remove(i);
+            }
+        }
 
         if (tab == 2) {
             for (int i = recyclerViewList.size() - 1; i >= 0; i--) {
@@ -91,7 +95,7 @@ public class ListLab {
     }
 
     public UUID mAddToDo(ToDoList mToDoList){
-        ListLab.getInstance().addToDo(mToDoList);
+        getInstance().addToDo(mToDoList);
         UUID uuid = mToDoList.getUUID();
 
         return uuid;
@@ -101,5 +105,5 @@ public class ListLab {
         getToDoListLinkedHashMap().remove(uuid);
     }
 
-    }
+}
 
