@@ -7,13 +7,14 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="description_hint">Description</string>
     <string name="title_hint">Title: shopping</string>
-    <string name="savetolist">SAVE</string>
+    <string name="savetolist">new Task</string>
     <string name="donecheckbox">Done</string>
     <string name="delete">Delete</string>
     <string name="title_activity_date_time">DateTimeActivity</string>
     <string name="savedialog">save and back to Tasks list?</string>
     <string name="deletedialog">Are you sure to delete this Task?</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="Email">E_mail</string>
     <string name="emailhint">something@example.com</string>
@@ -23,4 +24,10 @@
     <string name="sign_up">SIGN UP</string>
     <string name="repeat_password">repeat password</string>
     <string name="log_in">LOG IN</string>
+    <string name="wrong_email">wrong Email</string>
+    <string name="pass_limits"><![CDATA[5<pass<13]]></string>
+    <string name="confirmation">didn\'t confirmed</string>
+    <string name="approve_signup">you signed up :)</string>
+    <string name="dublicate_email">there is an account using this Email Do you forget your password?</string>
+    <string name="guest_openning_alert">Opened as guest  (your task destroy after exiting)</string>
 </resources>
