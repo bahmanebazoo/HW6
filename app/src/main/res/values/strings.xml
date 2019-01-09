@@ -7,7 +7,7 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="description_hint">Description</string>
     <string name="title_hint">Title: shopping</string>
-    <string name="savetolist">new Task</string>
+    <string name="savetolist">SAVE</string>
     <string name="donecheckbox">Done</string>
     <string name="delete">Delete</string>
     <string name="title_activity_date_time">DateTimeActivity</string>

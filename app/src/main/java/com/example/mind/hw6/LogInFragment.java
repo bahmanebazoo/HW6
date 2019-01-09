@@ -18,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mind.hw6.model.Profile;
-import com.example.mind.hw6.model.ProfileLab;
+import com.example.mind.hw6.model.Repository;
 
 
 /**
@@ -93,7 +93,7 @@ public class LogInFragment extends Fragment {
                 if (mCountClick == 0 && mTime2 - mTime1 <= 1000) {
                     Intent intent = MainActivity.newIntent(getActivity(), null);
                     startActivity(intent);
-                    Toast.makeText(getActivity(), "             Opened as guest \n(your task destroy after exiting)", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.guest_openning_alert), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -125,15 +125,10 @@ public class LogInFragment extends Fragment {
         mLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int check = 0;
-                for (int i = 0; i < ProfileLab.getInstance().getList().size(); i++) {
-                    if (ProfileLab.getInstance().getList().get(i).getEmail().equals(mEmail.getText().toString())) {
-                        check++;
 
+                    if (Repository.getInstance(getActivity()).getProfileByEmail(mEmail.getText().toString())!=null) {
+                        mProfile = Repository.getInstance(getActivity()).getProfileByEmail(mEmail.getText().toString());
                     }
-                    if (check > 0)
-                        mProfile = ProfileLab.getInstance().getProfileByEmail(mEmail.getText().toString());
-                }
                 if (mProfile == null) {
                     if (mEmail.getText().toString().equals("")) {
                         Toast.makeText(getActivity(), " enter your email please ", Toast.LENGTH_LONG).show();

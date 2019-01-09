@@ -16,7 +16,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.mind.hw6.model.ListLab;
+import com.example.mind.hw6.model.Repository;
 import com.example.mind.hw6.model.ToDoList;
 
 import java.text.SimpleDateFormat;
@@ -47,12 +47,14 @@ public class AddToDoFragment extends Fragment {
     private Button mDelete;
     ToDoList mToDoList;
     private UUID id;
+    private UUID userid;
     private int position;
     private boolean state;
     private boolean mBooleancheck;
 
     private static final String ARG_BUTTON = "put_section_number";
     public static final String ARG_UUID_KEY = "get_uuid";
+    public static final String USER_ID_UUID = "userUUID";
 
     public AddToDoFragment() {
         // Required empty public constructor
@@ -61,14 +63,17 @@ public class AddToDoFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setId();
+        //setId();
         state = getArguments().getBoolean(ARG_BUTTON);
-        mToDoList = ListLab.getInstance().getToDo(id);
-        mStringTitle = ListLab.getInstance().getToDo(id).getTitle();
-        mStringDescription = ListLab.getInstance().getToDo(id).getDescription();
+        userid = (UUID) getArguments().getSerializable(USER_ID_UUID);
+        id = (UUID) getArguments().getSerializable(ARG_UUID_KEY);
+        mToDoList = new ToDoList(userid);
+        mToDoList = Repository.getInstance(getActivity()).getTask(id);
+        mStringTitle = mToDoList.getTitle();
+        mStringDescription = mToDoList.getDescription();
     }
 
-    public static AddToDoFragment newInstance(UUID uuid, boolean buttonAdd) {
+    public static AddToDoFragment newInstance(UUID uuid, boolean buttonAdd/*,UUID mUserUUID*/) {
         AddToDoFragment fragment = new AddToDoFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_UUID_KEY, uuid);
@@ -109,21 +114,21 @@ public class AddToDoFragment extends Fragment {
                     mToDoList.setTitle(mTitle.getText().toString());
                     mToDoList.setDescription(mDescription.getText().toString());
                     mToDoList.setDone(mDo.isChecked());
-                    mToDoList = new ToDoList();
-                    ListLab.getInstance().mAddToDo(mToDoList);
+                    /*mToDoList = new ToDoList();
+                    Repository.getInstance().mAddToDo(mToDoList);
                     id=mToDoList.getUUID();
                     mTitle.setText(null);
                     mDescription.setText(null);
                     mTitle.setHint(R.string.title_hint);
                     mDescription.setHint(R.string.description_hint);
-                    mDo.setChecked(false);
+                    mDo.setChecked(false);*/
                     mDelete.setVisibility(View.VISIBLE);
                     Toast.makeText(getActivity(), "saved", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getActivity(), "you cant left Title Empty!!", Toast.LENGTH_LONG).show();
                 }
 
-               /* ListLab.getInstance().addToDo(mToDoList);
+               /* Repository.getInstance().addToDo(mToDoList);
                 Log.d("onclick", "object created");
                 Toast.makeText(getActivity(), "saved", Toast.LENGTH_SHORT).show();
                 mTitle.setText("");
@@ -150,13 +155,13 @@ public class AddToDoFragment extends Fragment {
                 fragment.setTargetFragment(AddToDoFragment.this, REQ_DELETE_PICKER);
                 fragment.show(getFragmentManager(), DELETE_TAG);
 
-               /* ListLab.getInstance().removeTask(id);
-                if(ListLab.getInstance().getList().size()!=0) {
+               /* Repository.getInstance().removeTask(id);
+                if(Repository.getInstance().getProfileList().size()!=0) {
                     processOfDelete();
                 }
                 else{
                     mToDoList =new ToDoList();
-                    ListLab.getInstance().mAddToDo(mToDoList);
+                    Repository.getInstance().mAddToDo(mToDoList);
                     id=mToDoList.getUUID();
                     addToFragmentLayout(mToDoList);
                 }*/
@@ -224,11 +229,11 @@ public class AddToDoFragment extends Fragment {
             mToDoList.setDate(date);
             setDateButton();
         }
-        if (resultCode == 4) {
-            Toast.makeText(getContext(),"hahahah",Toast.LENGTH_SHORT).show();
+        /*if (resultCode == 4) {
+            Toast.makeText(getContext(), "hahahah", Toast.LENGTH_SHORT).show();
             processOfDelete();
 
-        }
+        }*/
 
     }
 
@@ -236,26 +241,48 @@ public class AddToDoFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         // getChildFragmentManager().getFragments().get(getArguments().getInt(ARG_SECTION_NUMBER_CHILD)).onActivityResult();
+        mToDoList.setDone(mDo.isChecked());
     }
 
     public void addToFragmentLayout() {
         mTitle.setText(mToDoList.getTitle());
         mDescription.setText(mToDoList.getDescription());
         mDo.setChecked(mToDoList.isDone());
+        mDateButton.setText(mToDoList.getDate().toString());
     }
 
-    public void processOfDelete() {
+    public void processOfDelete(UUID uuid) {
 
-        ToDoList toDoList_this = ListLab.getInstance().getList().get(ListLab.getInstance().getList().size() - 1);
+        ToDoList toDoList_this = Repository.getInstance(getActivity()).getList(uuid).get(Repository.getInstance(getActivity()).getList(uuid).size() - 1);
         id = toDoList_this.getUUID();
-        mToDoList = ListLab.getInstance().getToDo(id);
+        mToDoList = Repository.getInstance(getActivity()).getTask(id);
         addToFragmentLayout();
 
     }
 
-    public void setId() {
+   /* public void setId() {
         id = (UUID) getArguments().getSerializable(ARG_UUID_KEY);
-        position = ListLab.getInstance().getPosition(id);
+        position = Repository.getInstance(getActivity()).getTask(id);
+    }*/
+
+    public void saveInitialValues() {
+        mStringDescription = mToDoList.getDescription();
+        mStringTitle = mToDoList.getTitle();
     }
+
+   /* @Override
+    public void onStop() {
+        super.onStop();
+        mToDoList.setDone(mDo.isChecked());
+
+    }*/
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mToDoList.setDone(mDo.isChecked());
+        Repository.getInstance(getActivity()).update(mToDoList);
+    }
+
 
 }

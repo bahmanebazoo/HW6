@@ -1,5 +1,8 @@
 package com.example.mind.hw6.model;
 
+import android.support.annotation.Nullable;
+import android.widget.CheckBox;
+
 import java.util.Date;
 import java.util.UUID;
 
@@ -55,24 +58,24 @@ public class ToDoList {
         mDone = done;
     }
 
-    public ToDoList() {
-        mUUID = UUID.randomUUID();
+    public ToDoList(UUID user_uuid) {
+        mUserUUID = user_uuid;
+       mUUID=UUID.randomUUID();
         mDate = new Date();
-        mDone = false;
+        mDone=false;
+    }
+    public ToDoList( UUID uuid,UUID user_uuid){
+        mUserUUID=user_uuid;
+        mUUID=uuid;
+        mDate = new Date();
+        mDone=false;
     }
 
-    public ToDoList(UUID uuid) {
-        mUserUUID = uuid;
+  /*  public ToDoList(String title, String description, boolean done) {
         mUUID = UUID.randomUUID();
-        mDate = new Date();
-        mDone = false;
-    }
-
-    public ToDoList(String title, String description, boolean done) {
-        mUUID = UUID.randomUUID();
-        mDone = done;
+       mDone =done;
         mTitle = title;
         mDescription = description;
         mDate = new Date();
-    }
+    }*/
 }

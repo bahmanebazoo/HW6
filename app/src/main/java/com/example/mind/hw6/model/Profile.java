@@ -5,12 +5,21 @@ import java.util.UUID;
 
 public class Profile {
     private String mEmail;
+    private String mName;
     private String mDescription;
     private UUID mUUID;
-    private  Long mDate;
+    private  Date mDate;
 private int mCallNumber;
 private String mPasssword;
 
+
+    public String getName() {
+        return mName;
+    }
+
+    public void setName(String name) {
+        mName = name;
+    }
 
     public String getPasssword() {
         return mPasssword;
@@ -54,11 +63,11 @@ private String mPasssword;
         mDescription = description;
     }
 
-    public long getDate() {
+    public Date getDate() {
         return mDate;
     }
 
-    public void setDate(long date) {
+    public void setDate(Date date) {
         mDate = date;
     }
 

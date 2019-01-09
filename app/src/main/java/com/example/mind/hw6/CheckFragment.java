@@ -1,7 +1,6 @@
 package com.example.mind.hw6;
 
 
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -12,7 +11,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
-import com.example.mind.hw6.model.ListLab;
+import com.example.mind.hw6.model.Repository;
 
 import java.util.UUID;
 
@@ -24,6 +23,7 @@ public class CheckFragment extends DialogFragment {
 
     AddToDoFragment addToDoFragment;
     public static final String DELETE_TAG = "delete";
+    UUID id;
 
     public static CheckFragment newInstance(UUID uuid) {
 
@@ -49,10 +49,10 @@ public class CheckFragment extends DialogFragment {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        UUID id = (UUID) getArguments().getSerializable(DELETE_TAG);
-                        Toast.makeText(getActivity(), ListLab.getInstance().getToDo(id).
+                        id = (UUID) getArguments().getSerializable(DELETE_TAG);
+                        Toast.makeText(getActivity(), Repository.getInstance(getActivity()).getTask(id).
                                 getTitle() + " deleted", Toast.LENGTH_SHORT).show();
-                        ListLab.getInstance().removeTask(id);
+                        Repository.getInstance(getActivity()).removeTask(id);
 
 
                     }
@@ -71,7 +71,7 @@ public class CheckFragment extends DialogFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        addToDoFragment.processOfDelete();
+        addToDoFragment.processOfDelete(Repository.getInstance(getActivity()).getTask(id).getUserUUID());
     }
 
     @Override

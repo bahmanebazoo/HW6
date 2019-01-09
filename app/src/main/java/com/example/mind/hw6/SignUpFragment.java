@@ -3,7 +3,6 @@ package com.example.mind.hw6;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.mind.hw6.model.Profile;
-import com.example.mind.hw6.model.ProfileLab;
+import com.example.mind.hw6.model.Repository;
 
 import java.util.Date;
 
@@ -65,15 +64,15 @@ public class SignUpFragment extends Fragment {
             public void onClick(View v) {
                 int check = 0;
                 boolean add = true;
-                for (int i = 0; i < ProfileLab.getInstance().getList().size(); i++) {
-                    if (ProfileLab.getInstance().getList().get(i).getEmail().equals(mEmail.getText().toString())) {
+               /* for (int i = 0; i < ProfileLab.getInstance(getActivity()).getProfileList().size(); i++) {
+                    if (ProfileLab.getInstance(getActivity()).getProfileByEmail(mEmail.getText().toString())!=null) {
                         check++;
                         add = false;
 
                     }
-                }
-                if (check != 0) {
-                    Toast.makeText(getActivity(), "there is an account using this Email\nDo you forget your password?", Toast.LENGTH_LONG).show();
+                }*/
+                if (Repository.getInstance(getActivity()).getProfileByEmail(mEmail.getText().toString())!=null) {
+                    Toast.makeText(getActivity(), getString(R.string.dublicate_email), Toast.LENGTH_LONG).show();
                 } else
                     mBooleanEmail = true;
                 if (mBooleanEmail && mPassword.getText().toString().length() > 5 && mPassword.getText().toString().length() < 13)
@@ -92,22 +91,22 @@ public class SignUpFragment extends Fragment {
                     mConfirm.setBackgroundColor(getActivity().getColor(R.color.White));
                     mPassword.setBackgroundColor(getActivity().getColor(R.color.White));
                     mProfile = new Profile();
-                    mProfile.setDate(System.currentTimeMillis());
+                    mProfile.setDate(new Date(System.currentTimeMillis()));
                     mProfile.setEmail(mEmail.getText().toString());
                     mProfile.setPasssword(mPassword.getText().toString());
-                    ProfileLab.getInstance().addProfile(getActivity(), mProfile);
-                    Toast.makeText(getActivity(), " you signed up :)  ", Toast.LENGTH_SHORT).show();
+                    Repository.getInstance(getActivity()).addProfile(getActivity(), mProfile);
+                    Toast.makeText(getActivity(), getString(R.string.approve_signup), Toast.LENGTH_SHORT).show();
                     Intent intent = LogInActivity.newIntent(getActivity());
                     startActivity(intent);
 
                 } else if (!mBooleanEmail) {
-                    Toast.makeText(getActivity(), "   wrong Email ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.wrong_email), Toast.LENGTH_SHORT).show();
                     mEmail.setBackgroundColor(getActivity().getColor(R.color.Alarm));
                 } else if (!mBooleanPassword) {
-                    Toast.makeText(getActivity(), "  5<pass<13  ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.pass_limits), Toast.LENGTH_SHORT).show();
                     mPassword.setBackgroundColor(getActivity().getColor(R.color.Alarm));
                 } else if (!mBooleanConfirm) {
-                    Toast.makeText(getActivity(), " didn't confirmed   ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.confirmation), Toast.LENGTH_SHORT).show();
                     mConfirm.setBackgroundColor(getActivity().getColor(R.color.Alarm));
                     mConfirm.clearComposingText();
                 }

@@ -22,12 +22,18 @@
         android:maxLines="6"
         android:hint="Description"/>
 
-    <DatePicker
+    <!--<DatePicker
 android:layout_gravity="center_horizontal"
         android:id="@+id/date_input"
         android:background="@color/colorBackground"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"></DatePicker>
+        android:layout_height="wrap_content"></DatePicker>-->
+
+    <Button
+        android:id="@+id/date_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DATE"/>
 
     <CheckBox
         android:id="@+id/done_condition"
@@ -48,11 +54,11 @@ android:layout_gravity="center_horizontal"
             android:layout_height="wrap_content"
             android:text="@string/savetolist"/>
 
-       <!-- <Button
-            android:id="@+id/new_to_do"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/newtodo"/>-->
+          <Button
+              android:id="@+id/new_to_do"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/delete"/>
     </LinearLayout>
 
 </LinearLayout>
