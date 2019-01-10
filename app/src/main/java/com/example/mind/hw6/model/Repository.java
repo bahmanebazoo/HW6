@@ -119,7 +119,7 @@ public class Repository {
 
     }
 
-    public UUID mAddToDo(Task toDoList) {
+    public UUID mAddTask(Task toDoList) {
         ContentValues values = getContentValues(toDoList);
         mDatabase.insert(TaskDbSchema.TaskTable.NAME, null, values);
 
@@ -127,9 +127,15 @@ public class Repository {
     }
 
     public void removeTask(UUID uuid) {
-        String whereClause = TaskDbSchema.ProfileTable.Colms.UUID + " =? ";
+        String whereClause = TaskDbSchema.TaskTable.Colms.UUID + " =? ";
         String[] whereArgs = new String[]{uuid.toString()};
         mDatabase.delete(TaskDbSchema.TaskTable.NAME, whereClause, whereArgs);
+    }
+    public void removeTasks(UUID user_uuid){
+
+        String whereClause = TaskDbSchema.TaskTable.Colms.USER_UUID+ " =? ";
+        String[] whereArgs = new String[]{user_uuid.toString()};
+        mDatabase.delete(TaskDbSchema.TaskTable.NAME,whereClause,whereArgs);
     }
 
     public ContentValues getContentValues(Task toDoList) {

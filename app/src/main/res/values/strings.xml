@@ -12,7 +12,8 @@
     <string name="delete">Delete</string>
     <string name="title_activity_date_time">DateTimeActivity</string>
     <string name="savedialog">save and back to Tasks list?</string>
-    <string name="deletedialog">Are you sure to delete this Task?</string>
+    <string name="deletetaskdialog">Are you sure to delete this Task?</string>
+    <string name="deletealldialog">Are you sure to delete all Tasks?</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

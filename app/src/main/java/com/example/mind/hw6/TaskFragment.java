@@ -33,7 +33,8 @@ public class TaskFragment extends Fragment {
     private static final int REQ_DATE_PICKER = 0;
     public static final int REQ_DELETE_PICKER = 1;
     public static final String DATE_TAG = "date";
-    public static final String DELETE_TAG = "delete";
+    public static final String DELETE_TASK_TAG = "delete";
+
 
 
     private EditText mTitle;
@@ -115,7 +116,7 @@ public class TaskFragment extends Fragment {
                     mToDoList.setDescription(mDescription.getText().toString());
                     mToDoList.setDone(mDo.isChecked());
                     /*mToDoList = new Task();
-                    Repository.getInstance().mAddToDo(mToDoList);
+                    Repository.getInstance().mAddTask(mToDoList);
                     id=mToDoList.getUUID();
                     mTitle.setText(null);
                     mDescription.setText(null);
@@ -151,9 +152,9 @@ public class TaskFragment extends Fragment {
         mDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CheckFragment fragment = CheckFragment.newInstance(id);
+                CheckFragment fragment = CheckFragment.newInstance(id,userid);
                 fragment.setTargetFragment(TaskFragment.this, REQ_DELETE_PICKER);
-                fragment.show(getFragmentManager(), DELETE_TAG);
+                fragment.show(getFragmentManager(), DELETE_TASK_TAG);
 
                /* Repository.getInstance().removeTask(id);
                 if(Repository.getInstance().getProfileList().size()!=0) {
@@ -161,7 +162,7 @@ public class TaskFragment extends Fragment {
                 }
                 else{
                     mToDoList =new Task();
-                    Repository.getInstance().mAddToDo(mToDoList);
+                    Repository.getInstance().mAddTask(mToDoList);
                     id=mToDoList.getUUID();
                     addToFragmentLayout(mToDoList);
                 }*/

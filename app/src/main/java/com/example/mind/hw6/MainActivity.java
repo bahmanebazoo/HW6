@@ -1,5 +1,6 @@
 package com.example.mind.hw6;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -18,6 +19,8 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -35,6 +38,7 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
     public static final String USER_ID = "userid";
+    public static final String DELETE_ALL_TAG = "delete_all";
     private PlaceholderFragment.RToDoAdapter mRToDoAdapter;
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -76,8 +80,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mToDoList = new Task(mUUIDuser);
-                //Repository.getInstance(getApplicationContext()).mAddToDo(mToDoList);
-                UUID uuid = Repository.getInstance(getApplicationContext()).mAddToDo(mToDoList);
+                //Repository.getInstance(getApplicationContext()).mAddTask(mToDoList);
+                UUID uuid = Repository.getInstance(getApplicationContext()).mAddTask(mToDoList);
                 // Toast.makeText(getApplicationContext(),uuid.toString(),Toast.LENGTH_LONG).show();
                 Intent intent = TaskActivity.newIntent(MainActivity.this, uuid, false);
                 startActivity(intent);
@@ -86,28 +90,28 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("resume","bahman");
+    }
 
-    /*@Override
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.main_activity, menu);
+
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        CheckFragment fragment = CheckFragment.newInstance(null,mUUIDuser);
+        fragment.show(getSupportFragmentManager(),DELETE_ALL_TAG);
+      // Repository.getInstance(getApplicationContext()).removeTasks(mUUIDuser);
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }*/
+       return true;
+    }
 
     /**
      * A placeholder fragment containing a simple view.
@@ -127,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onResume() {
             super.onResume();
-            updateUI();
         }
 
         /**
@@ -286,6 +289,8 @@ public RToDoAdapter(List<Task> tasks){
             // Show 3 total pages.
             return 3;
         }
+
+
     }
 
     @Override
