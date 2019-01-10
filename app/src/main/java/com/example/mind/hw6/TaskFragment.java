@@ -17,7 +17,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.mind.hw6.model.Repository;
-import com.example.mind.hw6.model.ToDoList;
+import com.example.mind.hw6.model.Task;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,7 +27,7 @@ import java.util.UUID;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AddToDoFragment extends Fragment {
+public class TaskFragment extends Fragment {
 
     private static final String DIALOG_TAG = "DialogDate";
     private static final int REQ_DATE_PICKER = 0;
@@ -45,7 +45,7 @@ public class AddToDoFragment extends Fragment {
     private Button mDateButton;
     private Button mSave;
     private Button mDelete;
-    ToDoList mToDoList;
+    Task mToDoList;
     private UUID id;
     private UUID userid;
     private int position;
@@ -56,7 +56,7 @@ public class AddToDoFragment extends Fragment {
     public static final String ARG_UUID_KEY = "get_uuid";
     public static final String USER_ID_UUID = "userUUID";
 
-    public AddToDoFragment() {
+    public TaskFragment() {
         // Required empty public constructor
     }
 
@@ -67,14 +67,14 @@ public class AddToDoFragment extends Fragment {
         state = getArguments().getBoolean(ARG_BUTTON);
         userid = (UUID) getArguments().getSerializable(USER_ID_UUID);
         id = (UUID) getArguments().getSerializable(ARG_UUID_KEY);
-        mToDoList = new ToDoList(userid);
+        mToDoList = new Task(userid);
         mToDoList = Repository.getInstance(getActivity()).getTask(id);
         mStringTitle = mToDoList.getTitle();
         mStringDescription = mToDoList.getDescription();
     }
 
-    public static AddToDoFragment newInstance(UUID uuid, boolean buttonAdd/*,UUID mUserUUID*/) {
-        AddToDoFragment fragment = new AddToDoFragment();
+    public static TaskFragment newInstance(UUID uuid, boolean buttonAdd/*,UUID mUserUUID*/) {
+        TaskFragment fragment = new TaskFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_UUID_KEY, uuid);
         args.putBoolean(ARG_BUTTON, buttonAdd);
@@ -114,7 +114,7 @@ public class AddToDoFragment extends Fragment {
                     mToDoList.setTitle(mTitle.getText().toString());
                     mToDoList.setDescription(mDescription.getText().toString());
                     mToDoList.setDone(mDo.isChecked());
-                    /*mToDoList = new ToDoList();
+                    /*mToDoList = new Task();
                     Repository.getInstance().mAddToDo(mToDoList);
                     id=mToDoList.getUUID();
                     mTitle.setText(null);
@@ -143,7 +143,7 @@ public class AddToDoFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 DateFragment fragment = DateFragment.newInstance();
-                fragment.setTargetFragment(AddToDoFragment.this, REQ_DELETE_PICKER);
+                fragment.setTargetFragment(TaskFragment.this, REQ_DELETE_PICKER);
                 fragment.show(getFragmentManager(), DATE_TAG);
             }
         });
@@ -152,7 +152,7 @@ public class AddToDoFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 CheckFragment fragment = CheckFragment.newInstance(id);
-                fragment.setTargetFragment(AddToDoFragment.this, REQ_DELETE_PICKER);
+                fragment.setTargetFragment(TaskFragment.this, REQ_DELETE_PICKER);
                 fragment.show(getFragmentManager(), DELETE_TAG);
 
                /* Repository.getInstance().removeTask(id);
@@ -160,7 +160,7 @@ public class AddToDoFragment extends Fragment {
                     processOfDelete();
                 }
                 else{
-                    mToDoList =new ToDoList();
+                    mToDoList =new Task();
                     Repository.getInstance().mAddToDo(mToDoList);
                     id=mToDoList.getUUID();
                     addToFragmentLayout(mToDoList);
@@ -253,7 +253,7 @@ public class AddToDoFragment extends Fragment {
 
     public void processOfDelete(UUID uuid) {
 
-        ToDoList toDoList_this = Repository.getInstance(getActivity()).getList(uuid).get(Repository.getInstance(getActivity()).getList(uuid).size() - 1);
+        Task toDoList_this = Repository.getInstance(getActivity()).getList(uuid).get(Repository.getInstance(getActivity()).getList(uuid).size() - 1);
         id = toDoList_this.getUUID();
         mToDoList = Repository.getInstance(getActivity()).getTask(id);
         addToFragmentLayout();

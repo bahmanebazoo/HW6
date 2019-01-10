@@ -6,7 +6,7 @@ import android.widget.CheckBox;
 import java.util.Date;
 import java.util.UUID;
 
-public class ToDoList {
+public class Task {
     private String mTitle;
     private String mDescription;
     private UUID mUUID;
@@ -58,20 +58,20 @@ public class ToDoList {
         mDone = done;
     }
 
-    public ToDoList(UUID user_uuid) {
+    public Task(UUID user_uuid) {
         mUserUUID = user_uuid;
        mUUID=UUID.randomUUID();
         mDate = new Date();
         mDone=false;
     }
-    public ToDoList( UUID uuid,UUID user_uuid){
+    public Task(UUID uuid, UUID user_uuid){
         mUserUUID=user_uuid;
         mUUID=uuid;
         mDate = new Date();
         mDone=false;
     }
 
-  /*  public ToDoList(String title, String description, boolean done) {
+  /*  public Task(String title, String description, boolean done) {
         mUUID = UUID.randomUUID();
        mDone =done;
         mTitle = title;

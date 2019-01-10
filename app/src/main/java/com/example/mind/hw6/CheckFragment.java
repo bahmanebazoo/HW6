@@ -21,7 +21,7 @@ import java.util.UUID;
  */
 public class CheckFragment extends DialogFragment {
 
-    AddToDoFragment addToDoFragment;
+    TaskFragment addToDoFragment;
     public static final String DELETE_TAG = "delete";
     UUID id;
 
@@ -77,7 +77,7 @@ public class CheckFragment extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addToDoFragment = (AddToDoFragment) getTargetFragment();
+        addToDoFragment = (TaskFragment) getTargetFragment();
 
     }
 }

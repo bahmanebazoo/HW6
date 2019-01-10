@@ -8,7 +8,7 @@ import android.os.Bundle;
 
 import java.util.UUID;
 
-public class AddToDoActivity extends AppCompatActivity {
+public class TaskActivity extends AppCompatActivity {
     public static final String OBJECT_ADDRESS = "object_address";
     private static final String BUTTONADD = "buttonAdd";
     public static final String BACK_OBJECT_ADDRESS = "back_object_address";
@@ -30,7 +30,7 @@ public class AddToDoActivity extends AppCompatActivity {
         // Toast.makeText(getApplicationContext(),id.toString(),Toast.LENGTH_LONG).show();
         boolean state = getIntent().getBooleanExtra(BUTTONADD, false);
         fragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, AddToDoFragment.newInstance(mUUID, state))
+                .replace(R.id.fragment_container, TaskFragment.newInstance(mUUID, state))
                 .commit();
 
 
@@ -38,13 +38,13 @@ public class AddToDoActivity extends AppCompatActivity {
 
 
     public static Intent newIntent(Context context, UUID uuid) {
-        Intent intent = new Intent(context, AddToDoActivity.class);
+        Intent intent = new Intent(context, TaskActivity.class);
         intent.putExtra(BACK_OBJECT_ADDRESS, uuid);
         return intent;
     }
     public static Intent newIntent(Context context, int code){
 
-        Intent intent = new Intent(context, AddToDoActivity.class);
+        Intent intent = new Intent(context, TaskActivity.class);
         intent.putExtra(SAVE_DIALOG,code);
 
         return intent;
@@ -53,7 +53,7 @@ public class AddToDoActivity extends AppCompatActivity {
 
     public static Intent newIntent(Context context, UUID uuid, boolean buttonAdd) {
 
-        Intent intent = new Intent(context, AddToDoActivity.class);
+        Intent intent = new Intent(context, TaskActivity.class);
         intent.putExtra(OBJECT_ADDRESS, uuid);
         intent.putExtra(BUTTONADD, buttonAdd);
 
@@ -62,7 +62,7 @@ public class AddToDoActivity extends AppCompatActivity {
 
   /*  @Override
     public void onBackPressed() {
-        ToDoList toDoList = Repository.getInstance(getParent()).getProfileList().get(Repository.getInstance(getParent()).getProfileList().size() - 1);
+        Task toDoList = Repository.getInstance(getParent()).getProfileList().get(Repository.getInstance(getParent()).getProfileList().size() - 1);
         *//*if(Repository.getInstance().getProfileList().size()==1&&counter==1){
             Repository.getInstance().getProfileList().remove(0);
             super.onBackPressed();

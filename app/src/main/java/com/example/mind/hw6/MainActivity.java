@@ -28,7 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mind.hw6.model.Repository;
-import com.example.mind.hw6.model.ToDoList;
+import com.example.mind.hw6.model.Task;
 
 import java.util.List;
 import java.util.UUID;
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ViewPager mViewPager;
     private ImageView mImageView;
-    private ToDoList mToDoList;
+    private Task mToDoList;
     private UUID mUUIDuser;
     private static UUID UserUUID;
 
@@ -75,11 +75,11 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mToDoList = new ToDoList(mUUIDuser);
+                mToDoList = new Task(mUUIDuser);
                 //Repository.getInstance(getApplicationContext()).mAddToDo(mToDoList);
                 UUID uuid = Repository.getInstance(getApplicationContext()).mAddToDo(mToDoList);
                 // Toast.makeText(getApplicationContext(),uuid.toString(),Toast.LENGTH_LONG).show();
-                Intent intent = AddToDoActivity.newIntent(MainActivity.this, uuid, false);
+                Intent intent = TaskActivity.newIntent(MainActivity.this, uuid, false);
                 startActivity(intent);
             }
         });
@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
 
         private void updateUI() {
             mposition = getArguments().getInt(ARG_SECTION_NUMBER);
-            List<ToDoList> tasks = Repository.getInstance(getActivity()).getListForShow(mposition, UserUUID);
+            List<Task> tasks = Repository.getInstance(getActivity()).getListForShow(mposition, UserUUID);
         /*    if (mposition!=1){
                 mImageView.setVisibility(View.GONE);
             }*/
@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
             private TextView mTextViewIcon;
             private TextView mTextViewDate;
             private RelativeLayout mRelativeLayout;
-            private ToDoList mToDoList;
+            private Task mToDoList;
 
             public RToDoViewHolder(@NonNull View itemView) {
                 super(itemView);
@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(getActivity(), "ok made toast", Toast.LENGTH_SHORT).show();
-                        Intent intent = AddToDoActivity.newIntent(getActivity(), mToDoList.getUUID(), true);
+                        Intent intent = TaskActivity.newIntent(getActivity(), mToDoList.getUUID(), true);
 
                         startActivity(intent);
 
@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
 
-            private void bind(ToDoList toDoList) {
+            private void bind(Task toDoList) {
                 mToDoList = toDoList;
                 String firstChar;
                 mTextViewTitle.setText(toDoList.getTitle());
@@ -225,11 +225,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         class RToDoAdapter extends RecyclerView.Adapter<RToDoViewHolder> {
-            private List<ToDoList> mTasks;
-public RToDoAdapter(List<ToDoList> tasks){
+            private List<Task> mTasks;
+public RToDoAdapter(List<Task> tasks){
     mTasks =tasks;
 }
-            public void setTask(List<ToDoList> tasks) {
+            public void setTask(List<Task> tasks) {
                 mTasks = tasks;
             }
 
@@ -245,7 +245,7 @@ public RToDoAdapter(List<ToDoList> tasks){
             @Override
             public void onBindViewHolder(@NonNull RToDoViewHolder viewHolder, int position) {
                 if (getArguments() != null) {
-                    ToDoList toDoList = Repository.getInstance(getActivity()).getListForShow(getArguments()
+                    Task toDoList = Repository.getInstance(getActivity()).getListForShow(getArguments()
                             .getInt(ARG_SECTION_NUMBER), UserUUID).get(position);
                     viewHolder.bind(toDoList);
                 }
@@ -255,9 +255,10 @@ public RToDoAdapter(List<ToDoList> tasks){
             public int getItemCount() {
                 Log.d("bahman", "hello");
                 mposition = getArguments().getInt(ARG_SECTION_NUMBER);
-                if (Repository.getInstance(getActivity()).getListForShow(mposition, UserUUID).size() > 0)
+                int size  =Repository.getInstance(getActivity()).getListForShow(mposition, UserUUID).size();
+                if (size> 0)
                     mImageView.setVisibility(View.GONE);
-                return Repository.getInstance(getActivity()).getListForShow(mposition, UserUUID).size();
+                return size;
             }
         }
 

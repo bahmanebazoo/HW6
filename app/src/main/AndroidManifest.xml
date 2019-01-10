@@ -22,7 +22,7 @@
             </intent-filter>
             -->
         </activity>
-        <activity android:name=".AddToDoActivity" />
+        <activity android:name=".TaskActivity" />
         <activity
             android:name=".LogInActivity"
             android:theme="@style/AppTheme.NoActionBar">

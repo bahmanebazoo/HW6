@@ -20,8 +20,8 @@ public class Repository {
     private static Repository instance;
     private SQLiteDatabase mDatabase;
     private Context mContext;
-    // private LinkedHashMap<UUID, ToDoList> mToDoListLinkedHashMap;
-//    private LinkedHashMap<UUID, ToDoList> mTempToDoListLinkedHashMap;
+    // private LinkedHashMap<UUID, Task> mToDoListLinkedHashMap;
+//    private LinkedHashMap<UUID, Task> mTempToDoListLinkedHashMap;
 
 
     private Repository(Context context) {
@@ -37,8 +37,8 @@ public class Repository {
         return instance;
     }
 
-    public List<ToDoList> getList(UUID user_uuid) {
-        List<ToDoList> tasks = new ArrayList<>();
+    public List<Task> getList(UUID user_uuid) {
+        List<Task> tasks = new ArrayList<>();
         String whereClause = TaskDbSchema.TaskTable.Colms.USER_UUID + " =? ";
         String[] whereArgs = new String[]{user_uuid.toString()};
         TaskCursorWrapper taskCursorWrapper = queryTask(whereClause, whereArgs);
@@ -70,7 +70,7 @@ public class Repository {
     }
 
 
-    public void update(ToDoList toDoList) {
+    public void update(Task toDoList) {
         ContentValues values = getContentValues(toDoList);
         String whereClause = TaskDbSchema.TaskTable.Colms.UUID + " = ? ";
         mDatabase.update(TaskDbSchema.TaskTable.NAME, values,
@@ -78,7 +78,7 @@ public class Repository {
     }
 
 
-    public ToDoList getTask(UUID id) {
+    public Task getTask(UUID id) {
         String whereClause = TaskDbSchema.TaskTable.Colms.UUID + " =? ";
         String[] whereArgs ;
         whereArgs = new String[]{id.toString()};
@@ -96,8 +96,8 @@ public class Repository {
     }
 
 
-    public List<ToDoList> getListForShow(int tab, UUID user_uuid) {
-        List<ToDoList> ListForRecyclerView = getList(user_uuid);
+    public List<Task> getListForShow(int tab, UUID user_uuid) {
+        List<Task> ListForRecyclerView = getList(user_uuid);
 
 
         if (tab == 2) {
@@ -119,7 +119,7 @@ public class Repository {
 
     }
 
-    public UUID mAddToDo(ToDoList toDoList) {
+    public UUID mAddToDo(Task toDoList) {
         ContentValues values = getContentValues(toDoList);
         mDatabase.insert(TaskDbSchema.TaskTable.NAME, null, values);
 
@@ -132,7 +132,7 @@ public class Repository {
         mDatabase.delete(TaskDbSchema.TaskTable.NAME, whereClause, whereArgs);
     }
 
-    public ContentValues getContentValues(ToDoList toDoList) {
+    public ContentValues getContentValues(Task toDoList) {
         ContentValues values = new ContentValues();
         values.put(TaskDbSchema.TaskTable.Colms.UUID, toDoList.getUUID().toString());
         values.put(TaskDbSchema.TaskTable.Colms.USER_UUID, toDoList.getUserUUID().toString());

@@ -7,6 +7,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id="@+id/fragment_container"
-    tools:context=".AddToDoActivity">
+    tools:context=".TaskActivity">
 
 </ScrollView>
