@@ -20,6 +20,8 @@ import android.widget.Toast;
 import com.example.mind.hw6.model.Profile;
 import com.example.mind.hw6.model.Repository;
 
+import java.util.UUID;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -91,9 +93,9 @@ public class LogInFragment extends Fragment {
                     mTime2 = System.currentTimeMillis();
                 }
                 if (mCountClick == 0 && mTime2 - mTime1 <= 1000) {
-                    Intent intent = MainActivity.newIntent(getActivity(), null);
-                    startActivity(intent);
+                    Intent intent = MainActivity.newIntent(getActivity(), UUID.randomUUID());
                     Toast.makeText(getActivity(), getString(R.string.guest_openning_alert), Toast.LENGTH_SHORT).show();
+                    startActivity(intent);
                 }
             }
         });

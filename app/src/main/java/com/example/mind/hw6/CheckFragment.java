@@ -21,7 +21,7 @@ import java.util.UUID;
  */
 public class CheckFragment extends DialogFragment {
 
-    private TaskFragment addToDoFragment;
+    private TaskFragment taskFragment;
     public static final String DELETE_TASK_TAG = "delete";
     public static final String DELETE_ALL_TAG = "delete_all";
     private UUID id;
@@ -39,6 +39,18 @@ public class CheckFragment extends DialogFragment {
 
     public CheckFragment() {
         // Required empty public constructor
+    }
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        id = (UUID) getArguments().getSerializable(DELETE_TASK_TAG);
+        userUUID = (UUID) getArguments().getSerializable(DELETE_ALL_TAG);
+        if (id != null) {
+            taskFragment = (TaskFragment) getTargetFragment();
+        } else {
+
+        }
+
     }
 
 
@@ -58,7 +70,7 @@ public class CheckFragment extends DialogFragment {
                         if (id != null) {
                             Toast.makeText(getActivity(), Repository.getInstance(getActivity()).getTask(id).
                                     getTitle() + " deleted", Toast.LENGTH_SHORT).show();
-                            //addToDoFragment.processOfDelete(id);
+                            //taskFragment.processOfDelete(id);
                             Repository.getInstance(getActivity()).removeTask(id);
                         } else {
                             Repository.getInstance(getActivity()).removeTasks(userUUID);
@@ -78,16 +90,4 @@ public class CheckFragment extends DialogFragment {
     }
 
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        id = (UUID) getArguments().getSerializable(DELETE_TASK_TAG);
-        userUUID = (UUID) getArguments().getSerializable(DELETE_ALL_TAG);
-        if (id != null) {
-            addToDoFragment = (TaskFragment) getTargetFragment();
-        } else {
-
-        }
-
-    }
 }

@@ -1,6 +1,6 @@
 package com.example.mind.hw6;
 
-import android.app.Dialog;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -33,12 +33,19 @@ import android.widget.Toast;
 import com.example.mind.hw6.model.Repository;
 import com.example.mind.hw6.model.Task;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
     public static final String USER_ID = "userid";
+    public static final String TASK_ID = "taskid";
     public static final String DELETE_ALL_TAG = "delete_all";
+    public static final int REQ_SHOW_TASK_TAG = 0;
+    public static final int REQ_EDIT_TASK_TAG = 1;
+    public static final String EDIT_TASK_SERIALIZABLE = "task_effected";
+    public static final String TASK_TAG = "show_task";
+    public static final String EDIT_TASK_TAG = "edit_tag";
     private PlaceholderFragment.RToDoAdapter mRToDoAdapter;
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -52,6 +59,20 @@ public class MainActivity extends AppCompatActivity {
     public static Intent newIntent(Context context, UUID userid) {
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra(USER_ID, userid);
+        return intent;
+
+    }
+
+   /* public static Intent newIntent(Context context, Serializable[] date_time_saveOrDelete) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra(EDIT_TASK_SERIALIZABLE, date_time_saveOrDelete);
+        return intent;
+
+    }*/
+
+    public static Intent newIntent(Context context, UUID task_id, boolean nothing) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra(USER_ID, task_id);
         return intent;
 
     }
@@ -80,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mToDoList = new Task(mUUIDuser);
-                //Repository.getInstance(getApplicationContext()).mAddTask(mToDoList);
+                //Repository.getInstance(getApplicationContext()).mAddTask(mTask);
                 UUID uuid = Repository.getInstance(getApplicationContext()).mAddTask(mToDoList);
                 // Toast.makeText(getApplicationContext(),uuid.toString(),Toast.LENGTH_LONG).show();
                 Intent intent = TaskActivity.newIntent(MainActivity.this, uuid, false);
@@ -93,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("resume","bahman");
+        Log.d("resume", "bahman");
     }
 
     @Override
@@ -106,11 +127,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        CheckFragment fragment = CheckFragment.newInstance(null,mUUIDuser);
-        fragment.show(getSupportFragmentManager(),DELETE_ALL_TAG);
-      // Repository.getInstance(getApplicationContext()).removeTasks(mUUIDuser);
+        CheckFragment fragment = CheckFragment.newInstance(null, mUUIDuser);
+        fragment.show(getSupportFragmentManager(), DELETE_ALL_TAG);
+        // Repository.getInstance(getApplicationContext()).removeTasks(mUUIDuser);
 
-       return true;
+        return true;
     }
 
     /**
@@ -128,9 +149,11 @@ public class MainActivity extends AppCompatActivity {
         private ImageView mImageView;
 
 
+
         @Override
         public void onResume() {
             super.onResume();
+            updateUI();
         }
 
         /**
@@ -173,14 +196,17 @@ public class MainActivity extends AppCompatActivity {
         private void updateUI() {
             mposition = getArguments().getInt(ARG_SECTION_NUMBER);
             List<Task> tasks = Repository.getInstance(getActivity()).getListForShow(mposition, UserUUID);
-        /*    if (mposition!=1){
+
+            if (tasks.size()>0)
                 mImageView.setVisibility(View.GONE);
-            }*/
+            else
+                mImageView.setVisibility(View.VISIBLE);
+
             if (mRToDoAdapter == null) {
                 mRToDoAdapter = new RToDoAdapter(tasks);
                 mRecyclerView.setAdapter(mRToDoAdapter);
             } else {
-                mRToDoAdapter.setTask(tasks);
+                mRToDoAdapter.setList(tasks);
                 mRToDoAdapter.notifyDataSetChanged();
             }
         }
@@ -190,52 +216,89 @@ public class MainActivity extends AppCompatActivity {
             private TextView mTextViewIcon;
             private TextView mTextViewDate;
             private RelativeLayout mRelativeLayout;
-            private Task mToDoList;
+            private Task mTask;
 
-            public RToDoViewHolder(@NonNull View itemView) {
+            public RToDoViewHolder(@NonNull final View itemView) {
                 super(itemView);
+
                 mTextViewTitle = itemView.findViewById(R.id.titleid);
                 mTextViewIcon = itemView.findViewById(R.id.icon_text);
                 mTextViewDate = itemView.findViewById(R.id.date_view_holder);
                 mRelativeLayout = itemView.findViewById(R.id.viewholderid);
 
+                itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        Toast.makeText(getActivity(),"ling click",Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                });
+
 
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(getActivity(), "ok made toast", Toast.LENGTH_SHORT).show();
-                        Intent intent = TaskActivity.newIntent(getActivity(), mToDoList.getUUID(), true);
+                        /*Toast.makeText(getActivity(), "ok made toast", Toast.LENGTH_SHORT).show();
+                        Intent intent = TaskActivity.newIntent(getActivity(), mTask.getUUID(), true);
 
-                        startActivity(intent);
+                        startActivity(intent);*/
 
+                        UUID id = mTask.getUUID();
+                        Log.d("itemClick", mTask.getTitle());
+                        ShowTaskFragment showTaskFragment = ShowTaskFragment.newInstance(id);
+                        showTaskFragment.setTargetFragment(PlaceholderFragment.this, REQ_SHOW_TASK_TAG);
+                        showTaskFragment.show(getFragmentManager(), TASK_TAG);
                     }
                 });
             }
 
-            private void bind(Task toDoList) {
-                mToDoList = toDoList;
+
+            private void bind(Task task) {
+                mTask = task;
                 String firstChar;
-                mTextViewTitle.setText(toDoList.getTitle());
-                if (toDoList.getTitle() == null)
+                mTextViewTitle.setText(task.getTitle());
+                if (task.getTitle() == null)
                     firstChar = "";
                 else
-                    firstChar = "" + toDoList.getTitle().charAt(0);
+                    firstChar = "" + task.getTitle().charAt(0);
                 mTextViewIcon.setText(firstChar.toUpperCase());
-                mTextViewDate.setText(toDoList.getDate().toString());
-                if (toDoList.isDone())
+                mTextViewDate.setText(task.getDate().toString());
+                if (task.isDone())
                     mRelativeLayout.setBackgroundColor(getContext().getColor(R.color.doneObjects));
+            }
+
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
+            /*if(requestCode!=Activity.RESULT_OK)
+                return;*/
+            if (resultCode != Activity.RESULT_OK)
+                return;
+            if (requestCode == REQ_SHOW_TASK_TAG) {
+                Toast.makeText(getActivity(), "new dialog oppened", Toast.LENGTH_SHORT).show();
+                UUID uuid = (UUID) data.getSerializableExtra(ShowTaskFragment.EXTRA_TASK_ID);
+                EditTaskFragment editTaskFragment = EditTaskFragment.newInstance(uuid);
+                editTaskFragment.setTargetFragment(PlaceholderFragment.this, REQ_EDIT_TASK_TAG);
+                editTaskFragment.show(getFragmentManager(),EDIT_TASK_TAG);
+                //HERE MUST GO TO DIALOG-FRAGMENT FOR EDITING
+            }
+            if(requestCode==REQ_EDIT_TASK_TAG){
+                updateUI();
             }
         }
 
         class RToDoAdapter extends RecyclerView.Adapter<RToDoViewHolder> {
             private List<Task> mTasks;
-public RToDoAdapter(List<Task> tasks){
-    mTasks =tasks;
-}
-            public void setTask(List<Task> tasks) {
+
+            public RToDoAdapter(List<Task> tasks) {
                 mTasks = tasks;
             }
 
+            public void setList(List<Task> tasks) {
+                mTasks = tasks;
+            }
 
             @NonNull
             @Override
@@ -248,9 +311,9 @@ public RToDoAdapter(List<Task> tasks){
             @Override
             public void onBindViewHolder(@NonNull RToDoViewHolder viewHolder, int position) {
                 if (getArguments() != null) {
-                    Task toDoList = Repository.getInstance(getActivity()).getListForShow(getArguments()
+                    Task task = Repository.getInstance(getActivity()).getListForShow(getArguments()
                             .getInt(ARG_SECTION_NUMBER), UserUUID).get(position);
-                    viewHolder.bind(toDoList);
+                    viewHolder.bind(task);
                 }
             }
 
@@ -258,9 +321,11 @@ public RToDoAdapter(List<Task> tasks){
             public int getItemCount() {
                 Log.d("bahman", "hello");
                 mposition = getArguments().getInt(ARG_SECTION_NUMBER);
-                int size  =Repository.getInstance(getActivity()).getListForShow(mposition, UserUUID).size();
-                if (size> 0)
+                int size = Repository.getInstance(getActivity()).getListForShow(mposition, UserUUID).size();
+                if (size > 0)
                     mImageView.setVisibility(View.GONE);
+                else
+                    mImageView.setVisibility(View.VISIBLE);
                 return size;
             }
         }

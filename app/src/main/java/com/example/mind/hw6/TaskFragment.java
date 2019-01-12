@@ -88,14 +88,14 @@ public class TaskFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         Toast.makeText(getActivity(), "", Toast.LENGTH_SHORT);
-        View view = inflater.inflate(R.layout.fragment_add_to_do, container, false);
+        View view = inflater.inflate(R.layout.fragment_task, container, false);
         mTitle = view.findViewById(R.id.insert_title);
         mDescription = view.findViewById(R.id.insert_description);
         mDo = view.findViewById(R.id.done_condition);
         // mDatePicker = view.findViewById(R.id.date_input);
         mDateButton = view.findViewById(R.id.date_button);
         mSave = view.findViewById(R.id.save_to_list);
-        mDelete = view.findViewById(R.id.new_to_do);
+        mDelete = view.findViewById(R.id.delete_task);
 
 
         if (!state) {

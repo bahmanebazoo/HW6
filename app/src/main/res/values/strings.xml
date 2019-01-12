@@ -7,13 +7,15 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="description_hint">Description</string>
     <string name="title_hint">Title: shopping</string>
-    <string name="savetolist">new Task</string>
+    <string name="savetolist">SAVE</string>
     <string name="donecheckbox">Done</string>
-    <string name="delete">Delete</string>
+    <string name="delete">DELETE</string>
     <string name="title_activity_date_time">DateTimeActivity</string>
     <string name="savedialog">save and back to Tasks list?</string>
     <string name="deletetaskdialog">Are you sure to delete this Task?</string>
     <string name="deletealldialog">Are you sure to delete all Tasks?</string>
+    <string name="edit_butoon">EDIT</string>
+    <string name="edit_task">Edit your Task:</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
