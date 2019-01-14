@@ -25,14 +25,15 @@ import java.util.GregorianCalendar;
  * A simple {@link Fragment} subclass.
  */
 public class DateFragment extends DialogFragment {
-private DatePicker mDatePicker;
+    private DatePicker mDatePicker;
     private static final String ARG_DATE = "date";
     public static final String EXTRA_DATE = "com.example.mind.hw6.date";
-private Date mDate;
-    public static DateFragment newInstance() {
+    private Date mDate;
+
+    public static DateFragment newInstance(Date date) {
 
         Bundle args = new Bundle();
-//        args.putSerializable(ARG_DATE,date);
+        args.putSerializable(ARG_DATE, date);
         DateFragment fragment = new DateFragment();
         fragment.setArguments(args);
         return fragment;
@@ -52,27 +53,28 @@ private Date mDate;
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        View view  = LayoutInflater.from(getActivity()).inflate(R.layout.date_picker,null);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.date_picker, null);
         mDatePicker = view.findViewById(R.id.date_picker);
-        /*Calendar calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         calendar.setTime(mDate);
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
-        mDatePicker.init(year,month,day,null);*/
+        mDatePicker.init(year, month, day, null);
 
         return new AlertDialog.Builder(getActivity())
                 .setTitle("Todo Date Picker : ")
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        int year =mDatePicker.getYear();
-                        int month= mDatePicker.getMonth();
+                        int year = mDatePicker.getYear();
+                        int month = mDatePicker.getMonth();
                         int day = mDatePicker.getDayOfMonth();
-                        Date date = new GregorianCalendar(year,month,day).getTime();
+                        Date date = new GregorianCalendar(year, month, day).getTime();
+
                         Intent intent = new Intent();
-                        intent.putExtra(EXTRA_DATE,date);
-                        getTargetFragment().onActivityResult(getTargetRequestCode(),Activity.RESULT_OK,intent);
+                        intent.putExtra(EXTRA_DATE, date);
+                        getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
                     }
                 })
                 .setView(view)

@@ -59,10 +59,7 @@ public class Task {
     }
 
     public Task(UUID user_uuid) {
-        mUserUUID = user_uuid;
-       mUUID=UUID.randomUUID();
-        mDate = new Date();
-        mDone=false;
+      this(UUID.randomUUID(), user_uuid);
     }
     public Task(UUID uuid, UUID user_uuid){
         mUserUUID=user_uuid;

@@ -16,6 +16,7 @@
     <string name="deletealldialog">Are you sure to delete all Tasks?</string>
     <string name="edit_butoon">EDIT</string>
     <string name="edit_task">Edit your Task:</string>
+    <string name="time_picker_title">Choose your Time</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -33,4 +34,6 @@
     <string name="approve_signup">you signed up :)</string>
     <string name="dublicate_email">there is an account using this Email Do you forget your password?</string>
     <string name="guest_openning_alert">Opened as guest  (your task destroy after exiting)</string>
+    <string name="datebutton">DATE</string>
+    <string name="timebutton">TIME</string>
 </resources>

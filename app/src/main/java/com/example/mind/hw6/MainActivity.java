@@ -33,7 +33,8 @@ import android.widget.Toast;
 import com.example.mind.hw6.model.Repository;
 import com.example.mind.hw6.model.Task;
 
-import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ViewPager mViewPager;
     private ImageView mImageView;
-    private Task mToDoList;
+    private Task mTask;
     private UUID mUUIDuser;
     private static UUID UserUUID;
 
@@ -100,9 +101,9 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mToDoList = new Task(mUUIDuser);
+                mTask = new Task(mUUIDuser);
                 //Repository.getInstance(getApplicationContext()).mAddTask(mTask);
-                UUID uuid = Repository.getInstance(getApplicationContext()).mAddTask(mToDoList);
+                UUID uuid = Repository.getInstance(getApplicationContext()).mAddTask(mTask);
                 // Toast.makeText(getApplicationContext(),uuid.toString(),Toast.LENGTH_LONG).show();
                 Intent intent = TaskActivity.newIntent(MainActivity.this, uuid, false);
                 startActivity(intent);
@@ -193,10 +194,9 @@ public class MainActivity extends AppCompatActivity {
             return rootView;
         }
 
-        private void updateUI() {
+        public void updateUI() {
             mposition = getArguments().getInt(ARG_SECTION_NUMBER);
             List<Task> tasks = Repository.getInstance(getActivity()).getListForShow(mposition, UserUUID);
-
             if (tasks.size()>0)
                 mImageView.setVisibility(View.GONE);
             else
@@ -244,12 +244,16 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent);*/
 
                         UUID id = mTask.getUUID();
-                        Log.d("itemClick", mTask.getTitle());
                         ShowTaskFragment showTaskFragment = ShowTaskFragment.newInstance(id);
                         showTaskFragment.setTargetFragment(PlaceholderFragment.this, REQ_SHOW_TASK_TAG);
                         showTaskFragment.show(getFragmentManager(), TASK_TAG);
                     }
                 });
+            }
+
+            private String getFormattedDate(String s) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat(s);
+                return dateFormat.format(Date.parse(mTask.getDate().toString()));
             }
 
 
@@ -260,9 +264,9 @@ public class MainActivity extends AppCompatActivity {
                 if (task.getTitle() == null)
                     firstChar = "";
                 else
-                    firstChar = "" + task.getTitle().charAt(0);
+                    firstChar = " " + task.getTitle().charAt(0);
                 mTextViewIcon.setText(firstChar.toUpperCase());
-                mTextViewDate.setText(task.getDate().toString());
+                mTextViewDate.setText(getFormattedDate("dd-mmm-yyyy  hh:mm a"));
                 if (task.isDone())
                     mRelativeLayout.setBackgroundColor(getContext().getColor(R.color.doneObjects));
             }
@@ -311,8 +315,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onBindViewHolder(@NonNull RToDoViewHolder viewHolder, int position) {
                 if (getArguments() != null) {
-                    Task task = Repository.getInstance(getActivity()).getListForShow(getArguments()
-                            .getInt(ARG_SECTION_NUMBER), UserUUID).get(position);
+                    Task task = mTasks.get(position);
                     viewHolder.bind(task);
                 }
             }
@@ -363,4 +366,6 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         //here must all of guest Tasks remove from Repository
     }
+
+
 }

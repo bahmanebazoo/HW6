@@ -143,8 +143,8 @@ public class TaskFragment extends Fragment {
         mDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DateFragment fragment = DateFragment.newInstance();
-                fragment.setTargetFragment(TaskFragment.this, REQ_DELETE_PICKER);
+                DateFragment fragment = DateFragment.newInstance(Repository.getInstance(getActivity()).getTask(id).getDate());
+                fragment.setTargetFragment(TaskFragment.this, REQ_DATE_PICKER);
                 fragment.show(getFragmentManager(), DATE_TAG);
             }
         });
@@ -230,18 +230,18 @@ public class TaskFragment extends Fragment {
             mToDoList.setDate(date);
             setDateButton();
         }
-        /*if (resultCode == 4) {
-            Toast.makeText(getContext(), "hahahah", Toast.LENGTH_SHORT).show();
-            processOfDelete();
 
-        }*/
 
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        // getChildFragmentManager().getFragments().get(getArguments().getInt(ARG_SECTION_NUMBER_CHILD)).onActivityResult();
+        String title = mToDoList.getTitle();
+        if (title == null || title.equals(""))
+            title = " ";
+        mToDoList.setTitle(title);
+        Repository.getInstance(getActivity()).update(mToDoList);
         mToDoList.setDone(mDo.isChecked());
     }
 

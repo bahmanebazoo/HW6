@@ -19,26 +19,27 @@ import android.widget.Toast;
 import com.example.mind.hw6.model.Repository;
 import com.example.mind.hw6.model.Task;
 
-import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 public class EditTaskFragment extends DialogFragment {
     public static final String GET_ID_FOR_EDIT = "task_id";
-    //   public static final String  EDIT_TASK_SERIALIZABLE = "com.example.mind.hw6.send_edited_task";
     public static final String EDITED_TASK = "com.example.mind.hw6.editedtask";
+    public static final int REQ_DATE_TAG = 0;
+    public static final int REQ_TIME_TAG = 1;
+    public static final String DATE_TAG = "date";
     private MainActivity.PlaceholderFragment mPlaceholderFragment;
     private EditText mTitle;
     private EditText mDescription;
-    private String mStringTitle;
-    private String mStringDescription;
     private CheckBox mDo;
     private Button mDateButton;
+    private Button mTimeButton;
     private Button mSave;
     private Button mDelete;
     private Task mTask;
     private UUID id;
-    // private Serializable[] intent_serializable_data=new Serializable[3];
-    private int mResultCode = 0;
+
 
 
     public EditTaskFragment() {
@@ -70,31 +71,38 @@ public class EditTaskFragment extends DialogFragment {
         mDescription = view.findViewById(R.id.insert_description);
         mDateButton = view.findViewById(R.id.date_button);
         mDo = view.findViewById(R.id.done_condition);
-        //mSave = view.findViewById(R.id.save_to_list);
+        mTimeButton = view.findViewById(R.id.time_button);
         mDelete = view.findViewById(R.id.delete_task);
+
 
         mTitle.setText(mTask.getTitle());
         mDescription.setText(mTask.getDescription());
         mDo.setChecked(mTask.isDone());
-        mDateButton.setText(mTask.getDate().toString());
-/*        mSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        mDateButton.setText(getFormattedDate("dd-mmm-yyy"));
+        mTimeButton.setText(getFormattedDate("hh:mm a"));
 
-            }
-        });*/
         mDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Repository.getInstance(getActivity()).removeTask(id);
                 Toast.makeText(getActivity(), "deleted", Toast.LENGTH_SHORT).show();
-                mPlaceholderFragment.onResume();
+                mPlaceholderFragment.updateUI();
             }
         });
         mDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DateFragment dateFragment = DateFragment.newInstance(mTask.getDate());
+                dateFragment.setTargetFragment(EditTaskFragment.this, REQ_DATE_TAG);
+                dateFragment.show(getFragmentManager(), DATE_TAG);
+            }
+        });
 
+        mTimeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimeFragment timeFragment = TimeFragment.newInstance(mTask.getDate());
+                timeFragment.setTargetFragment(EditTaskFragment.this, REQ_TIME_TAG);
             }
         });
 
@@ -108,22 +116,41 @@ public class EditTaskFragment extends DialogFragment {
 
     }
 
+    private String getFormattedDate(String s) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(s);
+        return dateFormat.format(Date.parse(mTask.getDate().toString()));
+    }
+
     private Intent getIntent() {
         Intent intent = new Intent();
         //intent.putExtra(EDITED_TASK,mTask);
         return intent;
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        //mPlaceholderFragment.onResume();
-    }
+
 
     private void saveMethod() {
-        mTask.setTitle(mTitle.getText().toString());
+        mTask.setTitle(mTitle.getText().toString()+"");
         mTask.setDescription(mDescription.getText().toString());
         mTask.setDone(mDo.isChecked());
         Repository.getInstance(getActivity()).update(mTask);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Date date = (Date) data.getSerializableExtra(DateFragment.EXTRA_DATE);
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        if (requestCode == REQ_DATE_TAG) {
+            mTask.setDate(date);
+            mDateButton.setText(getFormattedDate("dd-mmm-yyyy"));
+        }
+
+        if (requestCode == REQ_TIME_TAG) {
+            mTask.setDate(date);
+            mTimeButton.setText(getFormattedDate("hh:mm a"));
+        }
     }
 }

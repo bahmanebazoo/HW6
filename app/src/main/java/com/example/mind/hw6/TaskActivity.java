@@ -6,6 +6,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.example.mind.hw6.model.Repository;
+import com.example.mind.hw6.model.Task;
+
 import java.util.UUID;
 
 public class TaskActivity extends AppCompatActivity {
@@ -15,7 +18,7 @@ public class TaskActivity extends AppCompatActivity {
     public static final String DELETE_DIALOG = "delete";
     public static final String SAVE_DIALOG = "save";
     public static final String GET_OBJECT = "getobject";
-    private int counter=0;
+    private int counter = 0;
     private UUID mUUID;
 
 
@@ -24,10 +27,9 @@ public class TaskActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
         FragmentManager fragmentManager = getSupportFragmentManager();
-         mUUID= (UUID) getIntent().getSerializableExtra(OBJECT_ADDRESS);
+        mUUID = (UUID) getIntent().getSerializableExtra(OBJECT_ADDRESS);
 
 
-        // Toast.makeText(getApplicationContext(),id.toString(),Toast.LENGTH_LONG).show();
         boolean state = getIntent().getBooleanExtra(BUTTONADD, false);
         fragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, TaskFragment.newInstance(mUUID, state))
@@ -42,10 +44,11 @@ public class TaskActivity extends AppCompatActivity {
         intent.putExtra(BACK_OBJECT_ADDRESS, uuid);
         return intent;
     }
-    public static Intent newIntent(Context context, int code){
+
+    public static Intent newIntent(Context context, int code) {
 
         Intent intent = new Intent(context, TaskActivity.class);
-        intent.putExtra(SAVE_DIALOG,code);
+        intent.putExtra(SAVE_DIALOG, code);
 
         return intent;
     }
@@ -60,7 +63,19 @@ public class TaskActivity extends AppCompatActivity {
         return intent;
     }
 
-  /*  @Override
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Task task = Repository.getInstance(getApplicationContext()).getTask(mUUID);
+        String title = task.getTitle();
+        if (title == null || title.equals(""))
+            title = " ";
+        task.setTitle(title);
+        Repository.getInstance(getApplicationContext()).update(task);
+
+    }
+
+    /*  @Override
     public void onBackPressed() {
         Task toDoList = Repository.getInstance(getParent()).getProfileList().get(Repository.getInstance(getParent()).getProfileList().size() - 1);
         *//*if(Repository.getInstance().getProfileList().size()==1&&counter==1){
