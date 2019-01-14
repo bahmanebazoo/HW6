@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.example.mind.hw6.model.Repository;
 import com.example.mind.hw6.model.Task;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
@@ -29,6 +30,7 @@ public class EditTaskFragment extends DialogFragment {
     public static final int REQ_DATE_TAG = 0;
     public static final int REQ_TIME_TAG = 1;
     public static final String DATE_TAG = "date";
+    public static final String TIME_TAG= "time";
     private MainActivity.PlaceholderFragment mPlaceholderFragment;
     private EditText mTitle;
     private EditText mDescription;
@@ -103,7 +105,8 @@ public class EditTaskFragment extends DialogFragment {
             public void onClick(View v) {
                 TimeFragment timeFragment = TimeFragment.newInstance(mTask.getDate());
                 timeFragment.setTargetFragment(EditTaskFragment.this, REQ_TIME_TAG);
-            }
+                timeFragment.show(getFragmentManager(),TIME_TAG);
+        }
         });
 
         return new AlertDialog.Builder(getActivity()).setTitle(R.string.edit_task).setPositiveButton(R.string.savetolist, new DialogInterface.OnClickListener() {
@@ -118,7 +121,7 @@ public class EditTaskFragment extends DialogFragment {
 
     private String getFormattedDate(String s) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(s);
-        return dateFormat.format(Date.parse(mTask.getDate().toString()));
+        return dateFormat.format(mTask.getDate());
     }
 
     private Intent getIntent() {
@@ -139,12 +142,13 @@ public class EditTaskFragment extends DialogFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Date date = (Date) data.getSerializableExtra(DateFragment.EXTRA_DATE);
+        Date date = (Date) data.getSerializableExtra(TimeFragment.EXTRA_TIME);
+        Date date1 = (Date) data.getSerializableExtra(DateFragment.EXTRA_DATE);
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
         if (requestCode == REQ_DATE_TAG) {
-            mTask.setDate(date);
+            mTask.setDate(date1);
             mDateButton.setText(getFormattedDate("dd-mmm-yyyy"));
         }
 

@@ -150,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
         private ImageView mImageView;
 
 
-
         @Override
         public void onResume() {
             super.onResume();
@@ -162,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+
 
 
         public PlaceholderFragment() {
@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
         public void updateUI() {
             mposition = getArguments().getInt(ARG_SECTION_NUMBER);
             List<Task> tasks = Repository.getInstance(getActivity()).getListForShow(mposition, UserUUID);
-            if (tasks.size()>0)
+            if (tasks.size() > 0)
                 mImageView.setVisibility(View.GONE);
             else
                 mImageView.setVisibility(View.VISIBLE);
@@ -209,6 +209,28 @@ public class MainActivity extends AppCompatActivity {
                 mRToDoAdapter.setList(tasks);
                 mRToDoAdapter.notifyDataSetChanged();
             }
+        }
+
+        public void updateUIAll() {
+            mposition = getArguments().getInt(ARG_SECTION_NUMBER);
+
+            for (int i = 1; i < 4; i++) {
+                mposition = i;
+                List<Task> tasks = Repository.getInstance(getActivity()).getListForShow(mposition, UserUUID);
+                if (tasks.size() > 0)
+                    mImageView.setVisibility(View.GONE);
+                else
+                    mImageView.setVisibility(View.VISIBLE);
+
+                if (mRToDoAdapter == null) {
+                    mRToDoAdapter = new RToDoAdapter(tasks);
+                    mRecyclerView.setAdapter(mRToDoAdapter);
+                } else {
+                    mRToDoAdapter.setList(tasks);
+                    mRToDoAdapter.notifyDataSetChanged();
+                }
+            }
+            mposition = getArguments().getInt(ARG_SECTION_NUMBER);
         }
 
         class RToDoViewHolder extends RecyclerView.ViewHolder {
@@ -229,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
                 itemView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        Toast.makeText(getActivity(),"ling click",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "ling click", Toast.LENGTH_SHORT).show();
                         return true;
                     }
                 });
@@ -285,10 +307,10 @@ public class MainActivity extends AppCompatActivity {
                 UUID uuid = (UUID) data.getSerializableExtra(ShowTaskFragment.EXTRA_TASK_ID);
                 EditTaskFragment editTaskFragment = EditTaskFragment.newInstance(uuid);
                 editTaskFragment.setTargetFragment(PlaceholderFragment.this, REQ_EDIT_TASK_TAG);
-                editTaskFragment.show(getFragmentManager(),EDIT_TASK_TAG);
+                editTaskFragment.show(getFragmentManager(), EDIT_TASK_TAG);
                 //HERE MUST GO TO DIALOG-FRAGMENT FOR EDITING
             }
-            if(requestCode==REQ_EDIT_TASK_TAG){
+            if (requestCode == REQ_EDIT_TASK_TAG) {
                 updateUI();
             }
         }
@@ -314,7 +336,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onBindViewHolder(@NonNull RToDoViewHolder viewHolder, int position) {
+
                 if (getArguments() != null) {
+                    //  updateUI();
                     Task task = mTasks.get(position);
                     viewHolder.bind(task);
                 }
@@ -322,7 +346,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public int getItemCount() {
-                Log.d("bahman", "hello");
                 mposition = getArguments().getInt(ARG_SECTION_NUMBER);
                 int size = Repository.getInstance(getActivity()).getListForShow(mposition, UserUUID).size();
                 if (size > 0)
@@ -344,6 +367,7 @@ public class MainActivity extends AppCompatActivity {
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
+
 
         @Override
         public Fragment getItem(int position) {

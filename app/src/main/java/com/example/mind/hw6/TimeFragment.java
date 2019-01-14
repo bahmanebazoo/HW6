@@ -62,7 +62,7 @@ public class TimeFragment extends DialogFragment {
 
         return new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.time_picker_title)
-                            .setView(view)
+
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -74,6 +74,7 @@ public class TimeFragment extends DialogFragment {
                         intent.putExtra(EXTRA_TIME, date);
                         getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
                     }
-                }).create();
+                }).setView(view)
+                .create();
     }
 }
