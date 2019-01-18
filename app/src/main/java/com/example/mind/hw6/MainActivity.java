@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -49,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String EDIT_TASK_TAG = "edit_tag";
     private PlaceholderFragment.RToDoAdapter mRToDoAdapter;
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
+    private int localPosition;
     private ViewPager mViewPager;
     private ImageView mImageView;
     private Task mTask;
@@ -95,8 +97,13 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = findViewById(R.id.tabs);
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        mViewPager.addOnAdapterChangeListener(new ViewPager.OnAdapterChangeListener() {
+            @Override
+            public void onAdapterChanged(@NonNull ViewPager viewPager, @Nullable PagerAdapter pagerAdapter, @Nullable PagerAdapter pagerAdapter1) {
+                onResume();
+            }
+        });
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,6 +123,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.d("resume", "bahman");
+    }
+
+    public static void updateAA() {
+        PlaceholderFragment placeholderFragment = new PlaceholderFragment();
+        placeholderFragment.updateUI();
     }
 
     @Override
@@ -144,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
         private EditText micon_text;
 
         private RecyclerView mRecyclerView;
-        private RToDoAdapter mRToDoAdapter;
+        private RToDoAdapter mRTaskAdapter;
         private String mtitle;
         private int mposition;
         private ImageView mImageView;
@@ -156,12 +168,12 @@ public class MainActivity extends AppCompatActivity {
             updateUI();
         }
 
+
         /**
          * The fragment argument representing the section number for this
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
-
 
 
         public PlaceholderFragment() {
@@ -202,12 +214,12 @@ public class MainActivity extends AppCompatActivity {
             else
                 mImageView.setVisibility(View.VISIBLE);
 
-            if (mRToDoAdapter == null) {
-                mRToDoAdapter = new RToDoAdapter(tasks);
-                mRecyclerView.setAdapter(mRToDoAdapter);
+            if (mRTaskAdapter == null) {
+                mRTaskAdapter = new RToDoAdapter(tasks);
+                mRecyclerView.setAdapter(mRTaskAdapter);
             } else {
-                mRToDoAdapter.setList(tasks);
-                mRToDoAdapter.notifyDataSetChanged();
+                mRTaskAdapter.setList(tasks);
+                mRTaskAdapter.notifyDataSetChanged();
             }
         }
 
@@ -222,12 +234,12 @@ public class MainActivity extends AppCompatActivity {
                 else
                     mImageView.setVisibility(View.VISIBLE);
 
-                if (mRToDoAdapter == null) {
-                    mRToDoAdapter = new RToDoAdapter(tasks);
-                    mRecyclerView.setAdapter(mRToDoAdapter);
+                if (mRTaskAdapter == null) {
+                    mRTaskAdapter = new RToDoAdapter(tasks);
+                    mRecyclerView.setAdapter(mRTaskAdapter);
                 } else {
-                    mRToDoAdapter.setList(tasks);
-                    mRToDoAdapter.notifyDataSetChanged();
+                    mRTaskAdapter.setList(tasks);
+                    mRTaskAdapter.notifyDataSetChanged();
                 }
             }
             mposition = getArguments().getInt(ARG_SECTION_NUMBER);
@@ -291,6 +303,8 @@ public class MainActivity extends AppCompatActivity {
                 mTextViewDate.setText(getFormattedDate("dd-mmm-yyyy  hh:mm a"));
                 if (task.isDone())
                     mRelativeLayout.setBackgroundColor(getContext().getColor(R.color.doneObjects));
+                else
+                    mRelativeLayout.setBackgroundColor(getActivity().getColor(R.color.White));
             }
 
         }
@@ -303,7 +317,6 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode != Activity.RESULT_OK)
                 return;
             if (requestCode == REQ_SHOW_TASK_TAG) {
-                Toast.makeText(getActivity(), "new dialog oppened", Toast.LENGTH_SHORT).show();
                 UUID uuid = (UUID) data.getSerializableExtra(ShowTaskFragment.EXTRA_TASK_ID);
                 EditTaskFragment editTaskFragment = EditTaskFragment.newInstance(uuid);
                 editTaskFragment.setTargetFragment(PlaceholderFragment.this, REQ_EDIT_TASK_TAG);
@@ -363,6 +376,9 @@ public class MainActivity extends AppCompatActivity {
      * one of the sections/tabs/pages.
      */
     public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
+
+
+
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);

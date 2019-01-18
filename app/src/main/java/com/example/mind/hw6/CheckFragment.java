@@ -72,8 +72,10 @@ public class CheckFragment extends DialogFragment {
                                     getTitle() + " deleted", Toast.LENGTH_SHORT).show();
                             //taskFragment.processOfDelete(id);
                             Repository.getInstance(getActivity()).removeTask(id);
+
                         } else {
                             Repository.getInstance(getActivity()).removeTasks(userUUID);
+                          //  MainActivity.updateAA();
                         }
 
 
