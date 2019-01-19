@@ -3,6 +3,7 @@ package com.example.mind.hw6;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import com.example.mind.hw6.model.Profile;
 import com.example.mind.hw6.model.Repository;
 
+import java.lang.reflect.Field;
 import java.util.UUID;
 
 
@@ -96,6 +98,36 @@ public class LogInFragment extends Fragment {
                     Intent intent = MainActivity.newIntent(getActivity(), UUID.randomUUID());
                     Toast.makeText(getActivity(), getString(R.string.guest_openning_alert), Toast.LENGTH_SHORT).show();
                     startActivity(intent);
+                }
+                if (mCountClick == 2) {
+                  //  Toast.makeText(getActivity(), ""+Build.VERSION.BASE_OS, Toast.LENGTH_SHORT).show();
+
+                    StringBuilder builder = new StringBuilder();
+                    builder.append("android : ").append(Build.VERSION.RELEASE);
+
+                    Field[] fields = Build.VERSION_CODES.class.getFields();
+                    for (Field field : fields) {
+                        String fieldName = field.getName();
+                        int fieldValue = -1;
+
+                        try {
+                            fieldValue = field.getInt(new Object());
+                        } catch (IllegalArgumentException e) {
+                            e.printStackTrace();
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        } catch (NullPointerException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (fieldValue == Build.VERSION.SDK_INT) {
+                            builder.append(" : ").append(fieldName).append(" : ");
+                            builder.append("sdk=").append(fieldValue);
+                        }
+                        Toast.makeText(getActivity(), "OS: " + builder.toString(), Toast.LENGTH_SHORT).show();
+                    }
+
+
                 }
             }
         });

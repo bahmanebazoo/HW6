@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager = findViewById(R.id.container);
-        mImageView = findViewById(R.id.imagempty);
+//        mImageView = findViewById(R.id.imagempty);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = findViewById(R.id.tabs);
