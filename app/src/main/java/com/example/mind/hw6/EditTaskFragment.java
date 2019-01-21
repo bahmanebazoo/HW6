@@ -47,7 +47,7 @@ public class EditTaskFragment extends DialogFragment {
     public EditTaskFragment() {
     }
 
-    public static EditTaskFragment newInstance(UUID uuid) {
+    public static EditTaskFragment newInstance(Long uuid) {
 
         Bundle args = new Bundle();
         args.putSerializable(GET_ID_FOR_EDIT, uuid);

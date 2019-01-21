@@ -30,8 +30,6 @@ public class Task {
 
     @ToOne(joinProperty = "mUserID")
     private Profile mProfile;
-
-    //  private UUID mUserUUID;
     private boolean mDone;
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
@@ -39,9 +37,18 @@ public class Task {
     /** Used for active entity operations. */
     @Generated(hash = 1469429066)
     private transient TaskDao myDao;
+    @Generated(hash = 1539386307)
+    private transient Long mProfile__resolvedKey;
+
+    @Keep
+    public Task(Long user_id){
+        mUserID = user_id;
+        mDate = new Date();
+    }
 
     @Generated(hash = 470845414)
-    public Task(String mTitle, String mDescription, Long mTaskID, Date mDate, Long mUserID, boolean mDone) {
+    public Task(String mTitle, String mDescription, Long mTaskID, Date mDate,
+            Long mUserID, boolean mDone) {
         this.mTitle = mTitle;
         this.mDescription = mDescription;
         this.mTaskID = mTaskID;
@@ -51,7 +58,7 @@ public class Task {
     }
 
     @Generated(hash = 733837707)
-    public Task(Long mUserID) {
+    public Task() {
     }
 
     public String getMTitle() {
@@ -101,9 +108,6 @@ public class Task {
     public void setMDone(boolean mDone) {
         this.mDone = mDone;
     }
-
-    @Generated(hash = 1539386307)
-    private transient Long mProfile__resolvedKey;
 
     /** To-one relationship, resolved on first access. */
     @Generated(hash = 963230654)
@@ -176,30 +180,8 @@ public class Task {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getTaskDao() : null;
     }
-
-
-public static class UUIDConverter implements PropertyConverter<UUID ,String> {
-
-    @Override
-    public UUID convertToEntityProperty(String databaseValue) {
-if(databaseValue==null)
-    return null;
-
-
-        return null;
-    }
-
-    @Override
-    public String convertToDatabaseValue(UUID entityProperty) {
-        return null;
-    }
-}
+   }
 
 
 
-   /* public List getmProfileByEmail(String email){
-       List<Profile> list =  mProfileDao.queryBuilder().where(ProfileDao.Properties.MEmail.eq(email)).list();
-       return list;
-    }*/
 
-}

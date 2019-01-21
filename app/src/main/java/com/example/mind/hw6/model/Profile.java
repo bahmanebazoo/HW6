@@ -16,12 +16,9 @@ public class Profile {
     private String mDescription;
     @Id(autoincrement = true)
     private Long mUserID;
-    //private UUID mUUID;
     private Date mDate;
     private int mCallNumber;
     private String mPasssword;
-
-    @Keep
     @Generated(hash = 356228986)
     public Profile(String mEmail, String mName, String mDescription, Long mUserID,
             Date mDate, int mCallNumber, String mPasssword) {
@@ -33,7 +30,6 @@ public class Profile {
         this.mCallNumber = mCallNumber;
         this.mPasssword = mPasssword;
     }
-    @Keep
     @Generated(hash = 782787822)
     public Profile() {
     }
@@ -79,4 +75,5 @@ public class Profile {
     public void setMPasssword(String mPasssword) {
         this.mPasssword = mPasssword;
     }
-}
+    
+  }

@@ -42,7 +42,7 @@ public class Repository {
     public List<Task> getList(Long user_id) {
         mTasks = mTaskDao
                 .queryBuilder()
-                .where(ProfileDao.Properties.MUserID.eq(user_id)).list();
+                .where(TaskDao.Properties.MUserID.eq(user_id)).list();
 
         return mTasks;
     }
@@ -88,8 +88,6 @@ public class Repository {
     }
 
     public Long mAddTask(Task task) {
-
-        mTaskDao.insert(task);
 
         return mTaskDao.insert(task);
 

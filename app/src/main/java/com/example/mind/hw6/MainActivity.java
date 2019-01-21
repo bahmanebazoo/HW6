@@ -317,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode != Activity.RESULT_OK)
                 return;
             if (requestCode == REQ_SHOW_TASK_TAG) {
-                UUID uuid = (UUID) data.getSerializableExtra(ShowTaskFragment.EXTRA_TASK_ID);
+                Long uuid =  data.getLongExtra(ShowTaskFragment.EXTRA_TASK_ID,-1);
                 EditTaskFragment editTaskFragment = EditTaskFragment.newInstance(uuid);
                 editTaskFragment.setTargetFragment(PlaceholderFragment.this, REQ_EDIT_TASK_TAG);
                 editTaskFragment.show(getFragmentManager(), EDIT_TASK_TAG);
