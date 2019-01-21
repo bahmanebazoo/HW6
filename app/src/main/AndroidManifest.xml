@@ -4,6 +4,7 @@
     package="com.example.mind.hw6">
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_luncher"
         android:label="@string/app_name"

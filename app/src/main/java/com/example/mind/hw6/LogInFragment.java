@@ -18,8 +18,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mind.hw6.model.DaoSession;
 import com.example.mind.hw6.model.Profile;
+import com.example.mind.hw6.model.ProfileDao;
 import com.example.mind.hw6.model.Repository;
+import com.example.mind.hw6.model.TaskDao;
 
 import java.lang.reflect.Field;
 import java.util.UUID;
@@ -29,6 +32,10 @@ import java.util.UUID;
  * A simple {@link Fragment} subclass.
  */
 public class LogInFragment extends Fragment {
+
+    ProfileDao mProfileDao;
+    TaskDao mTaskDao;
+
 
     private Profile mProfile;
     private EditText mEmail;
@@ -73,7 +80,7 @@ public class LogInFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.fragment_log_in, container, false);
         mEmail = view.findViewById(R.id.email_input);
         mPassword = view.findViewById(R.id.password_input);
@@ -95,7 +102,8 @@ public class LogInFragment extends Fragment {
                     mTime2 = System.currentTimeMillis();
                 }
                 if (mCountClick == 0 && mTime2 - mTime1 <= 1000) {
-                    Intent intent = MainActivity.newIntent(getActivity(), UUID.randomUUID());
+                    Profile profile = new Profile();
+                    Intent intent = MainActivity.newIntent(getActivity(), profile.getMUserID());
                     Toast.makeText(getActivity(), getString(R.string.guest_openning_alert), Toast.LENGTH_SHORT).show();
                     startActivity(intent);
                 }
@@ -161,15 +169,15 @@ public class LogInFragment extends Fragment {
             public void onClick(View v) {
 
                     if (Repository.getInstance(getActivity()).getProfileByEmail(mEmail.getText().toString())!=null) {
-                        mProfile = Repository.getInstance(getActivity()).getProfileByEmail(mEmail.getText().toString());
+                        mProfile =  Repository.getInstance(getActivity()).getProfileByEmail(mEmail.getText().toString());
                     }
                 if (mProfile == null) {
                     if (mEmail.getText().toString().equals("")) {
                         Toast.makeText(getActivity(), " enter your email please ", Toast.LENGTH_LONG).show();
                     } else
                         Toast.makeText(getActivity(), " this Email didn't signed up\n    please first sign up", Toast.LENGTH_LONG).show();
-                } else if (mProfile.getPasssword().equals(mPassword.getText().toString())) {
-                    Intent intent = MainActivity.newIntent(getActivity(), mProfile.getUUID());
+                } else if (mProfile.getMPasssword().equals(mPassword.getText().toString())) {
+                    Intent intent = MainActivity.newIntent(getActivity(), mProfile.getMUserID());
                     startActivity(intent);
                 } else
                     Toast.makeText(getActivity(), " wrong password.  do you forget?", Toast.LENGTH_LONG).show();

@@ -1,77 +1,82 @@
 package com.example.mind.hw6.model;
 
-import java.util.Date;
-import java.util.UUID;
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Keep;
+import org.greenrobot.greendao.annotation.Unique;
+import org.greenrobot.greendao.annotation.Generated;
 
+import java.util.Date;
+@Entity
 public class Profile {
+    @Unique
     private String mEmail;
+
     private String mName;
     private String mDescription;
-    private UUID mUUID;
-    private  Date mDate;
-private int mCallNumber;
-private String mPasssword;
+    @Id(autoincrement = true)
+    private Long mUserID;
+    //private UUID mUUID;
+    private Date mDate;
+    private int mCallNumber;
+    private String mPasssword;
 
-
-    public String getName() {
-        return mName;
+    @Keep
+    @Generated(hash = 356228986)
+    public Profile(String mEmail, String mName, String mDescription, Long mUserID,
+            Date mDate, int mCallNumber, String mPasssword) {
+        this.mEmail = mEmail;
+        this.mName = mName;
+        this.mDescription = mDescription;
+        this.mUserID = mUserID;
+        this.mDate = mDate;
+        this.mCallNumber = mCallNumber;
+        this.mPasssword = mPasssword;
     }
-
-    public void setName(String name) {
-        mName = name;
+    @Keep
+    @Generated(hash = 782787822)
+    public Profile() {
     }
-
-    public String getPasssword() {
-        return mPasssword;
+    public String getMEmail() {
+        return this.mEmail;
     }
-
-    public void setPasssword(String passsword) {
-        mPasssword = passsword;
+    public void setMEmail(String mEmail) {
+        this.mEmail = mEmail;
     }
-
-    public int getCallNumber() {
-        return mCallNumber;
+    public String getMName() {
+        return this.mName;
     }
-
-    public void setCallNumber(int callNumber) {
-        mCallNumber = callNumber;
+    public void setMName(String mName) {
+        this.mName = mName;
     }
-
-    public Profile(){
-        this(UUID.randomUUID());
-
-
+    public String getMDescription() {
+        return this.mDescription;
     }
-    public Profile(UUID UUID) {
-        mUUID = UUID;
+    public void setMDescription(String mDescription) {
+        this.mDescription = mDescription;
     }
-
-
-    public String getEmail() {
-        return mEmail;
+    public Long getMUserID() {
+        return this.mUserID;
     }
-
-    public void setEmail(String email) {
-        mEmail = email;
+    public void setMUserID(Long mUserID) {
+        this.mUserID = mUserID;
     }
-
-    public String getDescription() {
-        return mDescription;
+    public Date getMDate() {
+        return this.mDate;
     }
-
-    public void setDescription(String description) {
-        mDescription = description;
+    public void setMDate(Date mDate) {
+        this.mDate = mDate;
     }
-
-    public Date getDate() {
-        return mDate;
+    public int getMCallNumber() {
+        return this.mCallNumber;
     }
-
-    public void setDate(Date date) {
-        mDate = date;
+    public void setMCallNumber(int mCallNumber) {
+        this.mCallNumber = mCallNumber;
     }
-
-    public UUID getUUID() {
-        return mUUID;
+    public String getMPasssword() {
+        return this.mPasssword;
+    }
+    public void setMPasssword(String mPasssword) {
+        this.mPasssword = mPasssword;
     }
 }

@@ -19,31 +19,31 @@ public class TaskActivity extends AppCompatActivity {
     public static final String SAVE_DIALOG = "save";
     public static final String GET_OBJECT = "getobject";
     private int counter = 0;
-    private UUID mUUID;
+    private Long mTaskID;
 
+    public static Intent newIntent(Context context, Long uuid) {
+        Intent intent = new Intent(context, TaskActivity.class);
+        intent.putExtra(BACK_OBJECT_ADDRESS, uuid);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
         FragmentManager fragmentManager = getSupportFragmentManager();
-        mUUID = (UUID) getIntent().getSerializableExtra(OBJECT_ADDRESS);
+        mTaskID =  getIntent().getLongExtra(OBJECT_ADDRESS,-1);
 
 
         boolean state = getIntent().getBooleanExtra(BUTTONADD, false);
         fragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, TaskFragment.newInstance(mUUID, state))
+                .replace(R.id.fragment_container, TaskFragment.newInstance(mTaskID, state))
                 .commit();
 
 
     }
 
 
-    public static Intent newIntent(Context context, UUID uuid) {
-        Intent intent = new Intent(context, TaskActivity.class);
-        intent.putExtra(BACK_OBJECT_ADDRESS, uuid);
-        return intent;
-    }
 
     public static Intent newIntent(Context context, int code) {
 
@@ -54,7 +54,7 @@ public class TaskActivity extends AppCompatActivity {
     }
 
 
-    public static Intent newIntent(Context context, UUID uuid, boolean buttonAdd) {
+    public static Intent newIntent(Context context, Long uuid, boolean buttonAdd) {
 
         Intent intent = new Intent(context, TaskActivity.class);
         intent.putExtra(OBJECT_ADDRESS, uuid);
@@ -66,11 +66,11 @@ public class TaskActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Task task = Repository.getInstance(getApplicationContext()).getTask(mUUID);
-        String title = task.getTitle();
+        Task task = Repository.getInstance(getApplicationContext()).getTask(mTaskID);
+        String title = task.getMTitle();
         if (title == null || title.equals(""))
             title = " ";
-        task.setTitle(title);
+        task.setMTitle(title);
         Repository.getInstance(getApplicationContext()).update(task);
 
     }

@@ -11,8 +11,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
-import com.example.mind.hw6.model.Repository;
-
 import java.util.UUID;
 
 
@@ -27,10 +25,10 @@ public class CheckFragment extends DialogFragment {
     private UUID id;
     private UUID userUUID;
 
-    public static CheckFragment newInstance(UUID uuid, UUID user_id) {
+    public static CheckFragment newInstance(Long task_id, Long user_id) {
 
         Bundle args = new Bundle();
-        args.putSerializable(DELETE_TASK_TAG, uuid);
+        args.putSerializable(DELETE_TASK_TAG, task_id);
         args.putSerializable(DELETE_ALL_TAG, user_id);
         CheckFragment fragment = new CheckFragment();
         fragment.setArguments(args);

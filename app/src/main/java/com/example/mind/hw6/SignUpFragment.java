@@ -91,9 +91,9 @@ public class SignUpFragment extends Fragment {
                     mConfirm.setBackgroundColor(getActivity().getColor(R.color.White));
                     mPassword.setBackgroundColor(getActivity().getColor(R.color.White));
                     mProfile = new Profile();
-                    mProfile.setDate(new Date(System.currentTimeMillis()));
-                    mProfile.setEmail(mEmail.getText().toString());
-                    mProfile.setPasssword(mPassword.getText().toString());
+                    mProfile.setMDate(new Date(System.currentTimeMillis()));
+                    mProfile.setMEmail(mEmail.getText().toString());
+                    mProfile.setMPasssword(mPassword.getText().toString());
                     Repository.getInstance(getActivity()).addProfile(getActivity(), mProfile);
                     Toast.makeText(getActivity(), getString(R.string.approve_signup), Toast.LENGTH_SHORT).show();
                     Intent intent = LogInActivity.newIntent(getActivity());

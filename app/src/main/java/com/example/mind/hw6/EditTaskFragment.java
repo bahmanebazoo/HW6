@@ -40,7 +40,7 @@ public class EditTaskFragment extends DialogFragment {
     private Button mSave;
     private Button mDelete;
     private Task mTask;
-    private UUID id;
+    private Long id;
 
 
 
@@ -59,7 +59,7 @@ public class EditTaskFragment extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        id = (UUID) getArguments().getSerializable(GET_ID_FOR_EDIT);
+        id =  getArguments().getLong(GET_ID_FOR_EDIT);
         mTask = Repository.getInstance(getActivity()).getTask(id);
         mPlaceholderFragment = (MainActivity.PlaceholderFragment) getTargetFragment();
     }
@@ -77,9 +77,9 @@ public class EditTaskFragment extends DialogFragment {
         mDelete = view.findViewById(R.id.delete_task);
 
 
-        mTitle.setText(mTask.getTitle());
-        mDescription.setText(mTask.getDescription());
-        mDo.setChecked(mTask.isDone());
+        mTitle.setText(mTask.getMTitle());
+        mDescription.setText(mTask.getMDescription());
+        mDo.setChecked(mTask.getMDone());
         mDateButton.setText(getFormattedDate("dd-mmm-yyy"));
         mTimeButton.setText(getFormattedDate("hh:mm a"));
 
@@ -94,7 +94,7 @@ public class EditTaskFragment extends DialogFragment {
         mDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DateFragment dateFragment = DateFragment.newInstance(mTask.getDate());
+                DateFragment dateFragment = DateFragment.newInstance(mTask.getMDate());
                 dateFragment.setTargetFragment(EditTaskFragment.this, REQ_DATE_TAG);
                 dateFragment.show(getFragmentManager(), DATE_TAG);
             }
@@ -103,7 +103,7 @@ public class EditTaskFragment extends DialogFragment {
         mTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TimeFragment timeFragment = TimeFragment.newInstance(mTask.getDate());
+                TimeFragment timeFragment = TimeFragment.newInstance(mTask.getMDate());
                 timeFragment.setTargetFragment(EditTaskFragment.this, REQ_TIME_TAG);
                 timeFragment.show(getFragmentManager(),TIME_TAG);
         }
@@ -121,7 +121,7 @@ public class EditTaskFragment extends DialogFragment {
 
     private String getFormattedDate(String s) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(s);
-        return dateFormat.format(mTask.getDate());
+        return dateFormat.format(mTask.getMDate());
     }
 
     private Intent getIntent() {
@@ -133,9 +133,9 @@ public class EditTaskFragment extends DialogFragment {
 
 
     private void saveMethod() {
-        mTask.setTitle(mTitle.getText().toString()+"");
-        mTask.setDescription(mDescription.getText().toString());
-        mTask.setDone(mDo.isChecked());
+        mTask.setMTitle(mTitle.getText().toString()+"");
+        mTask.setMDescription(mDescription.getText().toString());
+        mTask.setMDone(mDo.isChecked());
         Repository.getInstance(getActivity()).update(mTask);
     }
 
@@ -148,12 +148,12 @@ public class EditTaskFragment extends DialogFragment {
             return;
         }
         if (requestCode == REQ_DATE_TAG) {
-            mTask.setDate(date1);
+            mTask.setMDate(date1);
             mDateButton.setText(getFormattedDate("dd-mmm-yyyy"));
         }
 
         if (requestCode == REQ_TIME_TAG) {
-            mTask.setDate(date);
+            mTask.setMDate(date);
             mTimeButton.setText(getFormattedDate("hh:mm a"));
         }
     }

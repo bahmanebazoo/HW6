@@ -31,7 +31,7 @@ public class ShowTaskFragment extends DialogFragment {
 
     public static final String TASK_UUID_TAG = "Task_to_show";
     public static final String EXTRA_TASK_ID = "com.example.mind.hw6.taskid";
-    private UUID mTaskID;
+    private Long mTaskID;
     private Task mTask;
     private TextView mTitleTask;
     private TextView mDescription;
@@ -41,7 +41,7 @@ public class ShowTaskFragment extends DialogFragment {
     private MainActivity.PlaceholderFragment placeHolderFragment;
 
 
-    public static ShowTaskFragment newInstance(UUID task_uuid) {
+    public static ShowTaskFragment newInstance(Long task_uuid) {
 
         Bundle args = new Bundle();
         args.putSerializable(TASK_UUID_TAG, task_uuid);
@@ -68,16 +68,16 @@ public class ShowTaskFragment extends DialogFragment {
         mDate = view.findViewById(R.id.show_date);
         mISDone = view.findViewById(R.id.show_done);
         //   mTitleTask.setText(mTask.getTitle());
-        mDescription.setText(mTask.getDescription());
+        mDescription.setText(mTask.getMDescription());
         SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yyyy  hh:mm a");
-        String date = format.format(Date.parse(mTask.getDate().toString()));
+        String date = format.format(Date.parse(mTask.getMDate().toString()));
         mDate.setText(date);
         mISDone.setClickable(false);
-        mISDone.setChecked(mTask.isDone());
+        mISDone.setChecked(mTask.getMDone());
 
 
         return new AlertDialog.Builder(getActivity())
-                .setTitle(Repository.getInstance(getActivity()).getTask(mTaskID).getTitle())
+                .setTitle(Repository.getInstance(getActivity()).getTask(mTaskID).getMTitle())
                 .setPositiveButton(R.string.edit_butoon, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -104,7 +104,7 @@ public class ShowTaskFragment extends DialogFragment {
    @Override
    public void onCreate(@Nullable Bundle savedInstanceState) {
        super.onCreate(savedInstanceState);
-       mTaskID = (UUID) getArguments().getSerializable(TASK_UUID_TAG);
+       mTaskID =  getArguments().getLong(TASK_UUID_TAG);
        mTask = Repository.getInstance(getActivity()).getTask(mTaskID);
        placeHolderFragment = (MainActivity.PlaceholderFragment) getTargetFragment();
    }

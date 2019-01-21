@@ -55,11 +55,11 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private ImageView mImageView;
     private Task mTask;
-    private UUID mUUIDuser;
-    private static UUID UserUUID;
+    private static Long mUserID;
 
 
-    public static Intent newIntent(Context context, UUID userid) {
+
+    public static Intent newIntent(Context context, Long userid) {
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra(USER_ID, userid);
         return intent;
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
     }*/
 
-    public static Intent newIntent(Context context, UUID task_id, boolean nothing) {
+    public static Intent newIntent(Context context, Long task_id, boolean nothing) {
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra(USER_ID, task_id);
         return intent;
@@ -84,8 +84,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mUUIDuser = (UUID) getIntent().getSerializableExtra(USER_ID);
-        UserUUID = mUUIDuser;
+        mUserID = getIntent().getLongExtra(USER_ID,-1);
+        mUserID = mUserID;
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -108,11 +108,11 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mTask = new Task(mUUIDuser);
+                mTask = new Task(mUserID);
                 //Repository.getInstance(getApplicationContext()).mAddTask(mTask);
-                UUID uuid = Repository.getInstance(getApplicationContext()).mAddTask(mTask);
+                Long task_id = Repository.getInstance(getApplicationContext()).mAddTask(mTask);
                 // Toast.makeText(getApplicationContext(),uuid.toString(),Toast.LENGTH_LONG).show();
-                Intent intent = TaskActivity.newIntent(MainActivity.this, uuid, false);
+                Intent intent = TaskActivity.newIntent(MainActivity.this, task_id, false);
                 startActivity(intent);
             }
         });
@@ -140,9 +140,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        CheckFragment fragment = CheckFragment.newInstance(null, mUUIDuser);
+        CheckFragment fragment = CheckFragment.newInstance(null, mUserID);
         fragment.show(getSupportFragmentManager(), DELETE_ALL_TAG);
-        // Repository.getInstance(getApplicationContext()).removeTasks(mUUIDuser);
+        // Repository.getInstance(getApplicationContext()).removeTasks(mUserID);
 
         return true;
     }
@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
 
         public void updateUI() {
             mposition = getArguments().getInt(ARG_SECTION_NUMBER);
-            List<Task> tasks = Repository.getInstance(getActivity()).getListForShow(mposition, UserUUID);
+            List<Task> tasks = Repository.getInstance(getActivity()).getListForShow(mposition, mUserID);
             if (tasks.size() > 0)
                 mImageView.setVisibility(View.GONE);
             else
@@ -228,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
 
             for (int i = 1; i < 4; i++) {
                 mposition = i;
-                List<Task> tasks = Repository.getInstance(getActivity()).getListForShow(mposition, UserUUID);
+                List<Task> tasks = Repository.getInstance(getActivity()).getListForShow(mposition, mUserID);
                 if (tasks.size() > 0)
                     mImageView.setVisibility(View.GONE);
                 else
@@ -277,8 +277,8 @@ public class MainActivity extends AppCompatActivity {
 
                         startActivity(intent);*/
 
-                        UUID id = mTask.getUUID();
-                        ShowTaskFragment showTaskFragment = ShowTaskFragment.newInstance(id);
+                        Long task_id = mTask.getMTaskID();
+                        ShowTaskFragment showTaskFragment = ShowTaskFragment.newInstance(task_id);
                         showTaskFragment.setTargetFragment(PlaceholderFragment.this, REQ_SHOW_TASK_TAG);
                         showTaskFragment.show(getFragmentManager(), TASK_TAG);
                     }
@@ -287,21 +287,21 @@ public class MainActivity extends AppCompatActivity {
 
             private String getFormattedDate(String s) {
                 SimpleDateFormat dateFormat = new SimpleDateFormat(s);
-                return dateFormat.format(Date.parse(mTask.getDate().toString()));
+                return dateFormat.format(Date.parse(mTask.getMDate().toString()));
             }
 
 
             private void bind(Task task) {
                 mTask = task;
                 String firstChar;
-                mTextViewTitle.setText(task.getTitle());
-                if (task.getTitle() == null)
+                mTextViewTitle.setText(task.getMTitle());
+                if (task.getMTitle() == null)
                     firstChar = "";
                 else
-                    firstChar = " " + task.getTitle().charAt(0);
+                    firstChar = " " + task.getMTitle().charAt(0);
                 mTextViewIcon.setText(firstChar.toUpperCase());
                 mTextViewDate.setText(getFormattedDate("dd-mmm-yyyy  hh:mm a"));
-                if (task.isDone())
+                if (task.getMDone())
                     mRelativeLayout.setBackgroundColor(getContext().getColor(R.color.doneObjects));
                 else
                     mRelativeLayout.setBackgroundColor(getActivity().getColor(R.color.White));
@@ -360,7 +360,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public int getItemCount() {
                 mposition = getArguments().getInt(ARG_SECTION_NUMBER);
-                int size = Repository.getInstance(getActivity()).getListForShow(mposition, UserUUID).size();
+                int size = Repository.getInstance(getActivity()).getListForShow(mposition, mUserID).size();
                 if (size > 0)
                     mImageView.setVisibility(View.GONE);
                 else
