@@ -1,18 +1,18 @@
-package com.example.mind.hw6.model;
+package com.example.mind.hw6.database;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.mind.hw6.App;
+import com.example.mind.hw6.model.Profile;
+import com.example.mind.hw6.model.ProfileDao;
+import com.example.mind.hw6.model.Task;
+import com.example.mind.hw6.model.TaskDao;
 
 import org.greenrobot.greendao.database.Database;
 
 
 import java.util.List;
-import java.util.UUID;
 
 public class Repository {
 
@@ -50,7 +50,7 @@ public class Repository {
 
     public void update(Task task) {
 
-       mTaskDao.update(task);
+        mTaskDao.update(task);
     }
 
 
@@ -64,19 +64,33 @@ public class Repository {
     }
 
 
-    public List<Task> getListForShow(int tab, Long user_id) {
+    public List<Task> getListForShow(int tab, Long user_id, String s) {
         List<Task> ListForRecyclerView = getList(user_id);
 
-
-        if (tab == 2) {
+        if (tab == 1) {
             for (int i = ListForRecyclerView.size() - 1; i >= 0; i--) {
-                if (!ListForRecyclerView.get(i).getMDone()) {
+                if ((s != null && !s.equals("")) &&
+                        (!ListForRecyclerView.get(i).getMTitle().contains(s)
+                                || ListForRecyclerView.get(i).getMDescription().contains(s))) {
+                    ListForRecyclerView.remove(i);
+                }
+            }
+
+        } else if (tab == 2) {
+            for (int i = ListForRecyclerView.size() - 1; i >= 0; i--) {
+                if (!ListForRecyclerView.get(i).getMDone() ||
+                        (s != null && !s.equals("")) && (!ListForRecyclerView.get(i).getMTitle().contains(s)
+                                ||
+                                ListForRecyclerView.get(i).getMDescription().contains(s))) {
                     ListForRecyclerView.remove(i);
                 }
             }
         } else if (tab == 3) {
             for (int i = ListForRecyclerView.size() - 1; i >= 0; i--) {
-                if (ListForRecyclerView.get(i).getMDone()) {
+                if (ListForRecyclerView.get(i).getMDone() ||
+                        (s != null && !s.equals("")) && (!ListForRecyclerView.get(i).getMTitle().contains(s)
+                                ||
+                                ListForRecyclerView.get(i).getMDescription().contains(s))) {
                     ListForRecyclerView.remove(i);
                 }
             }

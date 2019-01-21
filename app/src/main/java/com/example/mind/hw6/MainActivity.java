@@ -12,6 +12,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
@@ -32,13 +33,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.mind.hw6.model.Repository;
+import com.example.mind.hw6.database.Repository;
 import com.example.mind.hw6.model.Task;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
+
+import static android.content.Intent.EXTRA_SUBJECT;
+import static android.content.Intent.EXTRA_TEXT;
 
 public class MainActivity extends AppCompatActivity {
     public static final String USER_ID = "userid";
@@ -49,15 +52,20 @@ public class MainActivity extends AppCompatActivity {
     public static final String EDIT_TASK_SERIALIZABLE = "task_effected";
     public static final String TASK_TAG = "show_task";
     public static final String EDIT_TASK_TAG = "edit_tag";
+    public static final String TITLE_TAG = "titleForSend";
+    public static final String DESCRIPTION_TAG = "descriptionForSend";
+    public static final String DATE_TAG = "dateForSend";
+    public static final String DONE_TAG = "doneForSend";
     private PlaceholderFragment.RToDoAdapter mRToDoAdapter;
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private int localPosition;
     private ViewPager mViewPager;
     private ImageView mImageView;
+    private SearchView mSearchView;
+    private static String mSearch;
     private Task mTask;
     private static Long mUserID;
-
-
+    private static PlaceholderFragment mFragment;
 
     public static Intent newIntent(Context context, Long userid) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -66,25 +74,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-   /* public static Intent newIntent(Context context, Serializable[] date_time_saveOrDelete) {
-        Intent intent = new Intent(context, MainActivity.class);
-        intent.putExtra(EDIT_TASK_SERIALIZABLE, date_time_saveOrDelete);
-        return intent;
-
-    }*/
-
     public static Intent newIntent(Context context, Long task_id, boolean nothing) {
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra(USER_ID, task_id);
         return intent;
-
     }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mUserID = getIntent().getLongExtra(USER_ID,-1);
+        mUserID = getIntent().getLongExtra(USER_ID, -1);
         mUserID = mUserID;
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -93,6 +93,8 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = findViewById(R.id.container);
 //        mImageView = findViewById(R.id.imagempty);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mSearchView = findViewById(R.id.search_view);
+
 
         TabLayout tabLayout = findViewById(R.id.tabs);
 
@@ -109,13 +111,29 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mTask = new Task(mUserID);
-                //Repository.getInstance(getApplicationContext()).mAddTask(mTask);
                 Long task_id = Repository.getInstance(getApplicationContext()).mAddTask(mTask);
-                // Toast.makeText(getApplicationContext(),uuid.toString(),Toast.LENGTH_LONG).show();
                 Intent intent = TaskActivity.newIntent(MainActivity.this, task_id, false);
                 startActivity(intent);
             }
         });
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                mSearch = s;
+                updateAA();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                mSearch = s;
+                updateAA();
+                return false;
+            }
+
+
+        });
+
 
     }
 
@@ -126,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static void updateAA() {
-        PlaceholderFragment placeholderFragment = new PlaceholderFragment();
+        PlaceholderFragment placeholderFragment = mFragment;
         placeholderFragment.updateUI();
     }
 
@@ -185,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
          */
         public static PlaceholderFragment newInstance(int sectionNumber) {
             PlaceholderFragment fragment = new PlaceholderFragment();
+            mFragment = fragment;
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
             fragment.setArguments(args);
@@ -208,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
 
         public void updateUI() {
             mposition = getArguments().getInt(ARG_SECTION_NUMBER);
-            List<Task> tasks = Repository.getInstance(getActivity()).getListForShow(mposition, mUserID);
+            List<Task> tasks = Repository.getInstance(getActivity()).getListForShow(mposition, mUserID, mSearch);
             if (tasks.size() > 0)
                 mImageView.setVisibility(View.GONE);
             else
@@ -228,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
 
             for (int i = 1; i < 4; i++) {
                 mposition = i;
-                List<Task> tasks = Repository.getInstance(getActivity()).getListForShow(mposition, mUserID);
+                List<Task> tasks = Repository.getInstance(getActivity()).getListForShow(mposition, mUserID, mSearch);
                 if (tasks.size() > 0)
                     mImageView.setVisibility(View.GONE);
                 else
@@ -263,7 +282,17 @@ public class MainActivity extends AppCompatActivity {
                 itemView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        Toast.makeText(getActivity(), "ling click", Toast.LENGTH_SHORT).show();
+                        Long task_id = mTask.getMTaskID();
+
+                        String s = "" + mTask.getMDescription() + "\nDate:" + mTask.getMDate().toString()
+                               +"\n" + (mTask.getMDone() ? "Task Done" : "Task didn't do");
+                        Toast.makeText(getActivity(), mTask.getMTitle(), Toast.LENGTH_SHORT).show();
+                        Intent sendIntent = new Intent();
+                        sendIntent.setAction(Intent.ACTION_SEND);
+                        sendIntent.putExtra(Intent.EXTRA_SUBJECT, mTask.getMTitle());
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, s);
+                        sendIntent.setType("text/plain");
+                        startActivity(sendIntent);
                         return true;
                     }
                 });
@@ -272,11 +301,6 @@ public class MainActivity extends AppCompatActivity {
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        /*Toast.makeText(getActivity(), "ok made toast", Toast.LENGTH_SHORT).show();
-                        Intent intent = TaskActivity.newIntent(getActivity(), mTask.getUUID(), true);
-
-                        startActivity(intent);*/
-
                         Long task_id = mTask.getMTaskID();
                         ShowTaskFragment showTaskFragment = ShowTaskFragment.newInstance(task_id);
                         showTaskFragment.setTargetFragment(PlaceholderFragment.this, REQ_SHOW_TASK_TAG);
@@ -317,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode != Activity.RESULT_OK)
                 return;
             if (requestCode == REQ_SHOW_TASK_TAG) {
-                Long uuid =  data.getLongExtra(ShowTaskFragment.EXTRA_TASK_ID,-1);
+                Long uuid = data.getLongExtra(ShowTaskFragment.EXTRA_TASK_ID, -1);
                 EditTaskFragment editTaskFragment = EditTaskFragment.newInstance(uuid);
                 editTaskFragment.setTargetFragment(PlaceholderFragment.this, REQ_EDIT_TASK_TAG);
                 editTaskFragment.show(getFragmentManager(), EDIT_TASK_TAG);
@@ -360,7 +384,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public int getItemCount() {
                 mposition = getArguments().getInt(ARG_SECTION_NUMBER);
-                int size = Repository.getInstance(getActivity()).getListForShow(mposition, mUserID).size();
+                int size = Repository.getInstance(getActivity()).getListForShow(mposition, mUserID, mSearch).size();
                 if (size > 0)
                     mImageView.setVisibility(View.GONE);
                 else
@@ -376,8 +400,6 @@ public class MainActivity extends AppCompatActivity {
      * one of the sections/tabs/pages.
      */
     public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
-
-
 
 
         public SectionsPagerAdapter(FragmentManager fm) {

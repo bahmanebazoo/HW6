@@ -1,4 +1,4 @@
-package com.example.mind.hw6.model;
+package com.example.mind.hw6.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

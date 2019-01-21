@@ -18,14 +18,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.mind.hw6.model.DaoSession;
 import com.example.mind.hw6.model.Profile;
 import com.example.mind.hw6.model.ProfileDao;
-import com.example.mind.hw6.model.Repository;
+import com.example.mind.hw6.database.Repository;
 import com.example.mind.hw6.model.TaskDao;
 
 import java.lang.reflect.Field;
-import java.util.UUID;
 
 
 /**

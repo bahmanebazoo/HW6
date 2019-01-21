@@ -1,8 +1,7 @@
-package com.example.mind.hw6;
+package com.example.mind.hw6.database;
 
 import android.app.Application;
 
-import com.example.mind.hw6.model.AppDevOpenHelper;
 import com.example.mind.hw6.model.DaoMaster;
 import com.example.mind.hw6.model.DaoSession;
 import com.example.mind.hw6.model.Profile;

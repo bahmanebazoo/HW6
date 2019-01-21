@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.mind.hw6.model.Profile;
-import com.example.mind.hw6.model.Repository;
+import com.example.mind.hw6.database.Repository;
 
 import java.util.Date;
 

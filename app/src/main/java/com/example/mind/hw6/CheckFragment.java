@@ -11,9 +11,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
-import com.example.mind.hw6.model.Repository;
-
-import java.util.UUID;
+import com.example.mind.hw6.database.Repository;
 
 
 /**
